@@ -8,43 +8,58 @@
 
     <div class="row">
         <div class="col-md-12">
+
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>TITLE</th>
-                        <th>START</th>
-                        <th>END</th>
-                        <th>IS_ALL_DAY</th>
-                        <th>BACKGROUND_COLOR</th>
-                        <th class="text-right">OPTIONS</th>
+                        <th>Title</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Staff</th>
+                        <th>Colour</th>
+                        <th class="text-right">Options</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
                 @foreach($calendar_events as $calendar_event)
-                <tr>
-                    <td>{{$calendar_event->id}}</td>
-                    <td>{{$calendar_event->title}}</td>
-                    <td>{{$calendar_event->start}}</td>
-                    <td>{{$calendar_event->end}}</td>
-                    <td>{{$calendar_event->is_all_day}}</td>
-                    <td>{{$calendar_event->background_color}}</td>
 
-                    <td class="text-right">
-                        <a class="btn btn-primary" href="{{ route('calendar_events.show', $calendar_event->id) }}">View</a>
-                        <a class="btn btn-warning " href="{{ route('calendar_events.edit', $calendar_event->id) }}">Edit</a>
-                        <form action="{{ route('calendar_events.destroy', $calendar_event->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"> <button class="btn btn-danger" type="submit">Delete</button></form>
-                    </td>
-                </tr>
+                    @if($calendar_event->user_id == Auth::user()->id)
+                    <tr>
+                        <td>{{$calendar_event->title}}</td>
+                        <td>{{$calendar_event->start}}</td>
+                        <td>{{$calendar_event->end}}</td>
+                        <td>{{$calendar_event->admin_id}}</td>
+                        <td>{{$calendar_event->background_color}}</td>
+
+                        <td class="text-right">
+                            <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
+                            <a class="btn btn-primary" href="{{ route('calendar_events.show', $calendar_event->id) }}">View</a>
+                            <a class="btn btn-warning " href="{{ route('calendar_events.edit', $calendar_event->id) }}">Edit</a>
+                            <form action="{{ route('calendar_events.destroy', $calendar_event->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"> <button class="btn btn-danger" type="submit">Delete</button></form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endif
 
                 @endforeach
-
                 </tbody>
             </table>
 
-            <a class="btn btn-success" href="{{ route('calendar_events.create') }}">Create</a>
+            <form action="{{ route('calendar_events.create.admin') }}" method="POST">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            @include('layouts.selectBookable', ['name' => 'selectAdmin', 'id' => 'selectAdmin_id'])
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" type="submit">Create</button>
+                    </div>
+                </div>
+            </form>
+
         </div>
     </div>
 

@@ -49,6 +49,32 @@ class CalendarEventController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function createByAdmin(Request $request)
+    {
+
+        $calendarOptions = [
+            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
+            'defaultView' => 'agendaWeek',
+            'weekends' => false,
+            'slotDuration' => '00:30:00',
+            'minTime' => '08:00:00',
+            'maxTime' => '18:00:00',
+            'weekNumbers' => true,
+            'navLinks' => true
+        ];
+        $calendar_events = CalendarEvent::where('admin_id', $request->input('selectAdmin'))->get();
+
+        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+
+        return view('calendar_events.create', compact('calendar'));
+    }
+
+    /**
      * @param Request $request
      * @param CalendarEvent $calendar_event
      */

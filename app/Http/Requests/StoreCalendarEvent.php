@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\CalendarEventClash;
 
 class StoreCalendarEvent extends FormRequest
 {
@@ -23,10 +24,11 @@ class StoreCalendarEvent extends FormRequest
      */
     public function rules()
     {
+
         return [
             'title' => 'nullable|max:255',
-            'start' => 'required|date',
-            'selectAdmin' => 'required'
+            'start' => ['required', 'date', new CalendarEventClash($this->selectAdmin)],
+            'selectAdmin' => 'required',
         ];
     }
 }
