@@ -4,6 +4,7 @@
 @section('style')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css" />
 @stop
 
 
@@ -42,6 +43,15 @@
                     {{--</div>--}}
 
 
+                <div class="form group">
+                    <div class="demo">
+                        <h2>DisableTimeRanges Example</h2>
+                        <p>Prevent selection of certain time values.</p>
+                        <p><input id="disableTimeRangesExample" type="text" class="time" /></p>
+                    </div>
+
+
+                </div>
                     {{--<div class="col-md-6">--}}
                         {{--<div class="form-group">--}}
                             {{--<label for="timepicker-start">Start Time</label>--}}
@@ -105,6 +115,7 @@
         {!! $calendar->script() !!}
     @endif
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
     <script type="text/javascript">
 
         $(function () {
@@ -133,8 +144,23 @@
                 {{--$('#username').html(data.username);--}}
                 {{--$('#email').html(data.email);--}}
             {{--});--}}
+            });
+
+
+            console.log(JsVar.disabledTimes[0]);
+            var dTimes = Object.create(JsVar.disabledTimes[0]);
+            // timepicker seems to mangle times passed into disableTimeRanges
+            $('#disableTimeRangesExample').timepicker({
+                'timeFormat': 'H:i',
+                'step': 30,
+                'forceRoundTime': true,
+                'minTime': '8am',
+                'maxTime': '5:30pm',
+                'disableTimeRanges': dTimes
+            });
+
         });
-        });
+
 
 
 

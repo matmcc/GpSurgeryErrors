@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Calendar;
+use Javascript;
 
 class CalendarEventController extends Controller
 {
@@ -67,11 +68,22 @@ class CalendarEventController extends Controller
             'weekNumbers' => true,
             'navLinks' => true
         ];
+
         $calendar_events = CalendarEvent::where('admin_id', $request->input('selectAdmin'))->get();
+
+        // TODO: Currently provides range of times for all days - needs to be per day
+        $disabledTimeRanges = [];
+        foreach ($calendar_events as $k => $event) {
+            $start = $event->start->toTimeString();
+            $end = $event->end->toTimeString();
+            $disabledTimeRanges[] = [substr("$start", 0, 5), substr("$end", 0, 5)];
+        }
+        //dd($disabledTimeRanges);
+        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges]]);
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
 
-        return view('calendar_events.create', compact('calendar'));
+        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges'));
     }
 
     /**
