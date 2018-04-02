@@ -10,6 +10,7 @@
         <div class="col-md-12">
 
             <table class="table table-striped">
+
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -22,7 +23,7 @@
                 </thead>
 
                 <tbody>
-                @foreach($calendar_events as $calendar_event)
+                @foreach($calendar_events->sortBy('start') as $calendar_event)
 
                     @if($calendar_event->user_id == Auth::user()->id)
                     <tr>
@@ -34,9 +35,15 @@
 
                         <td class="text-right">
                             <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
-                            <a class="btn btn-primary" href="{{ route('calendar_events.show', $calendar_event->id) }}">View</a>
-                            <a class="btn btn-warning " href="{{ route('calendar_events.edit', $calendar_event->id) }}">Edit</a>
-                            <form action="{{ route('calendar_events.destroy', $calendar_event->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"> <button class="btn btn-danger" type="submit">Delete</button></form>
+                                <button class="btn btn-primary" href="{{ route('calendar_events.show', $calendar_event->id) }}">View</button>
+                                <button class="btn btn-warning " href="{{ route('calendar_events.edit', $calendar_event->id) }}">Edit</button>
+                                <form action="{{ route('calendar_events.destroy', $calendar_event->id) }}"
+                                      method="POST"
+                                      onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
@@ -44,6 +51,7 @@
 
                 @endforeach
                 </tbody>
+
             </table>
 
             <form action="{{ route('calendar_events.create.admin') }}" method="POST">

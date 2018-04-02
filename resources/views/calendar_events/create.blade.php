@@ -69,16 +69,14 @@
                     </div>
                 </div>
 
-                    <div class="form-group">
-                     <label for="is_all_day">IS_ALL_DAY</label>
-                     <input type="text" id="is_all_day" name="is_all_day" class="form-control" value=""/>
-                </div>
-                    <div class="form-group">
-                     <label for="background_color">BACKGROUND_COLOR</label>
-                     <input type="text" id="background_color" name="background_color" class="form-control" value=""/>
-                </div>
-
-
+                    {{--<div class="form-group">--}}
+                     {{--<label for="is_all_day">IS_ALL_DAY</label>--}}
+                     {{--<input type="text" id="is_all_day" name="is_all_day" class="form-control" value=""/>--}}
+                {{--</div>--}}
+                    {{--<div class="form-group">--}}
+                     {{--<label for="background_color">BACKGROUND_COLOR</label>--}}
+                     {{--<input type="text" id="background_color" name="background_color" class="form-control" value=""/>--}}
+                {{--</div>--}}
 
             <a class="btn btn-default" href="{{ route('calendar_events.index') }}">Back</a>
             <button class="btn btn-primary" type="submit" >Create</button>
