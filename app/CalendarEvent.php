@@ -86,11 +86,12 @@ class CalendarEvent extends Model implements IdentifiableEvent
     public function getEventOptions()
     {
         return [
-            'color' => $this->background_color,
+            'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
             'overlap' => false,
-            'startEditable' => true,
+            'startEditable' => $this->eventBelongsToUser(),
             'durationEditable' => Auth::guard('admin')->check() ? true : false,
             'url' => route('calendar_events.show', $this->id),
+            'rendering' => $this->eventBelongsToUser() ? '' : 'background',
             // 'className' => something to set style per dr ?
         ];
     }
@@ -107,6 +108,16 @@ class CalendarEvent extends Model implements IdentifiableEvent
     public function admin()
     {
         return $this->belongsTo('App\Admin');
+    }
+
+    public function eventBelongsToUser()
+    {
+        return Auth::id() == $this->user()->first()->id;
+    }
+
+    public function eventBelongsToAdmin()
+    {
+        return Auth::id() == $this->admin()->first()->id;
     }
 
     public function scopeBetween($query, Carbon $start, Carbon $end)
