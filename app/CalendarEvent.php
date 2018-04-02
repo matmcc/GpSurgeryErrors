@@ -85,15 +85,39 @@ class CalendarEvent extends Model implements IdentifiableEvent
      */
     public function getEventOptions()
     {
-        return [
-            'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
-            'overlap' => false,
-            'startEditable' => $this->eventBelongsToUser(),
-            'durationEditable' => Auth::guard('admin')->check() ? true : false,
-            'url' => route('calendar_events.show', $this->id),
-            'rendering' => $this->eventBelongsToUser() ? '' : 'background',
-            // 'className' => something to set style per dr ?
-        ];
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::user();
+            if ($user->job_title == 'admin') {
+                return [
+                    'color' => $this->background_color,
+                    'overlap' => false,
+                    'startEditable' => true,
+                    'durationEditable' => true,
+                    'url' => route('calendar_events.show', $this->id),
+                ];
+            }
+            else {
+                return [
+                    'color' => $this->eventBelongsToAdmin() ? $this->background_color : '#ff9f89',
+                    'overlap' => false,
+                    'startEditable' => $this->eventBelongsToAdmin(),
+                    'durationEditable' => $this->eventBelongsToAdmin(),
+                    'url' => route('calendar_events.show', $this->id),
+                    'rendering' => $this->eventBelongsToAdmin() ? '' : 'background',
+                ];
+                }
+        }
+        else if (Auth::check()) {
+            return [
+                'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
+                'overlap' => false,
+                'startEditable' => $this->eventBelongsToUser(),
+                'durationEditable' => false,
+                'url' => route('calendar_events.show', $this->id),
+                'rendering' => $this->eventBelongsToUser() ? '' : 'background',
+                // 'className' => something to set style per dr ?
+            ];
+        }
     }
 
     // -----------------------------------------------------------------------------------------
