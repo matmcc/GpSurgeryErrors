@@ -14,7 +14,7 @@
     </div>
 
 
-    <div class="row">
+    <div class="">
         <div class="col-md-12">
 
             <div class="form-group">
@@ -29,47 +29,42 @@
                      <input type="text" id="'title" name="title" class="form-control" value=""/>
                 </div>
 
-                    {{--<div class="col-md-10" style="overflow:hidden;">--}}
-                        <div class="form-group">
-                            <label for="datepicker-start">Start Date</label>
-                            <div class="input-group date" id="datepicker-start" data-target-input="nearest">
-                                {{--<input type="text" id="datepicker-start" class="form-control datetimepicker-input" data-target="#datepicker-start"/>--}}
-                                {{--<div class="input-group-append" data-target="#datepicker-start" data-toggle="datetimepicker">--}}
-                                    {{--<div class="input-group-text"><i class="fa fa-calendar"></i></div>--}}
-                            </div>
 
-                            <input type="hidden" name="start" id="start" value=""/>
+                <div class="form-group">
+                    <div class="input-group date" id="datepicker-start" data-target-input="nearest">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="datepicker-start_preText">Date:</span>
                         </div>
-                    {{--</div>--}}
+                        <input type="text" id="datepicker-start" class="form-control datetimepicker-input" data-target="#datepicker-start"/>
+                        <div class="input-group-append" data-target="#datepicker-start" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
+                    </div>
+
+                    <input type="hidden" name="start" id="start" value=""/>
+                </div>
 
 
                 <div class="form group">
-                    <div class="demo">
-                        <h2>DisableTimeRanges Example</h2>
-                        <p>Prevent selection of certain time values.</p>
-                        <p><input id="disableTimeRangesExample" type="text" class="time" /></p>
+                    <div class="timePicker_disabledTimes">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="timePicker_preText">Time:</span>
+                            </div>
+                            <input class="form-control" id="timePicker" type="text" class="time"/>
+                            <div class="input-group-append" id="timePicker_postText">
+                                <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                            </div>
+                        </div>
                     </div>
-
-
                 </div>
-                    {{--<div class="col-md-6">--}}
-                        {{--<div class="form-group">--}}
-                            {{--<label for="timepicker-start">Start Time</label>--}}
-                            {{--<div class="input-group date" id="timepicker-start" data-target-input="nearest">--}}
-                                {{--<input type="text" id="timepicker-start" class="form-control datetimepicker-input" data-target="#timepicker-start"/>--}}
-                                {{--<div class="input-group-append" data-target="#timepicker-start" data-toggle="datetimepicker">--}}
-                                    {{--<div class="input-group-text"><i class="fa fa-clock-o"></i></div>--}}
-                                {{--</div>--}}
-                                {{--<input type="hidden" name="start_time" id="start_time" value=""/>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
+
 
                 <div class="form-group">
-                    <label for="selectAdmin_id">{{ __('Dr:') }}</label>
+                    <label for="selectAdmin_id"></label>
                     <div class="">
-                        {{--{!! Form::select('dr', $admins, null) !!}--}}
-                        @include('layouts.selectBookable', ['name' => 'selectAdmin', 'id' => 'selectAdmin_id'])
+                        @include('layouts.selectBookable',
+                        ['name' => 'selectAdmin', 'id' => 'selectAdmin_id', 'admin' => $admin_id])
 
                         @if ($errors->has('selectAdmin'))
                             <span class="invalid-feedback">
@@ -79,17 +74,10 @@
                     </div>
                 </div>
 
-                    {{--<div class="form-group">--}}
-                     {{--<label for="is_all_day">IS_ALL_DAY</label>--}}
-                     {{--<input type="text" id="is_all_day" name="is_all_day" class="form-control" value=""/>--}}
-                {{--</div>--}}
-                    {{--<div class="form-group">--}}
-                     {{--<label for="background_color">BACKGROUND_COLOR</label>--}}
-                     {{--<input type="text" id="background_color" name="background_color" class="form-control" value=""/>--}}
-                {{--</div>--}}
 
-            <a class="btn btn-default" href="{{ route('calendar_events.index') }}">Back</a>
-            <button class="btn btn-primary" type="submit" >Create</button>
+                    <a class="btn btn-default" href="{{ route('calendar_events.index') }}">Back</a>
+                    <button class="btn btn-primary" type="submit" >Create</button>
+
             </form>
         </div>
 
@@ -120,63 +108,91 @@
 
         $(function () {
 
+            var date = $('#datepicker-start').datetimepicker('viewDate').startOf('day');
+            console.log('Date: ', date.toString());
+            var time = '00:00';
+
+            console.log(JsVar.disabledTimes[0]);
+
+            function getDisabledTimes (date) {
+                var dTimes = [];
+
+                JsVar.disabledTimes[0].forEach(function (e) {
+                    //console.log('dTimes_ date: ', date.startOf('day').toString(), 'also: ', moment(e[0]).toString());
+                    if (moment(e[0]).isSame(date.startOf('day'))) {
+                        dTimes.push(e[1]);
+                        //console.log((e[1]));
+                        //console.log("a Match!")
+                    }
+                });
+                console.log('Disabled times: ', dTimes);
+                return dTimes;
+            }
+
+            function updateStartTime(date, time) {
+                //time = typeof time !== 'undefined' ? time : '00:00';
+                console.log(time, date.toString());
+                // TODO: next line needed?
+                date.startOf('day');
+                date.add(moment.duration(time));
+                console.log(date.toString());
+                $('#start').val(date);
+                console.log("updateStartTime: ", date.toString());
+                return date;
+            }
+
+            // timepicker seems to mangle times passed into disableTimeRanges
+            function updateTimePicker (disabledTimes) {
+                $('#timePicker').timepicker({
+                    'timeFormat': 'H:i',
+                    'step': 30,
+                    'forceRoundTime': true,
+                    //'useSelect': true,
+                    'minTime': '8am',
+                    'maxTime': '5:30pm',
+                    'disableTimeRanges': disabledTimes
+                });
+            }
+
+            // Set up datepicker options
             $('#datepicker-start').datetimepicker({
                 daysOfWeekDisabled: [0, 6],
                 disabledTimeIntervals: [[moment({ h: 0 }), moment({ h: 8 })], [moment({ h: 18 }), moment({ h: 24 })]],
-                inline: true,
-                sideBySide: true
-                //format: 'L'
+                locale: 'en-gb',
+                format: 'L'
             });
 
+            // Init timepicker
+            var dTimes = getDisabledTimes(date);
+            updateTimePicker(dTimes);
+
+            // on date change - update disabled times; update startDatetime
             $('#datepicker-start').on("change.datetimepicker", function (e) {
-                console.log(e.date);
-                $('#start').val(e.date);
+                console.log("Date changed: ", e.date.format('L'));
+                updateTimePicker(getDisabledTimes(e.date));
+                date = e.date;
+                updateStartTime(e.date, time);
+            });
+
+            // on time change - update startDatetime
+            $('#timePicker').on('changeTime', function() {
+                time = $(this).val();
+                console.log("Time changed: ", time);
+                updateStartTime(date, time);
+            });
+
+            $('#start').on('change', function() {
+                console.log("StartTime changed: ", $(this).val());
             });
 
             $('#selectAdmin_id').on('change', function() {
-            var data = {
-                'admin_id': $(this).val()
-            };
-            console.log(data);
-            {{--$.post('{{ route("ajax.user_select") }}', data, function(data, textStatus, xhr) {--}}
-                {{--/*optional stuff to do after success */--}}
-                {{--console.log(data);--}}
-                {{--$('#username').html(data.username);--}}
-                {{--$('#email').html(data.email);--}}
-            {{--});--}}
-            });
-
-
-            console.log(JsVar.disabledTimes[0]);
-            var dTimes = Object.create(JsVar.disabledTimes[0]);
-            // timepicker seems to mangle times passed into disableTimeRanges
-            $('#disableTimeRangesExample').timepicker({
-                'timeFormat': 'H:i',
-                'step': 30,
-                'forceRoundTime': true,
-                'minTime': '8am',
-                'maxTime': '5:30pm',
-                'disableTimeRanges': dTimes
+                var data = {
+                    'admin_id': $(this).val()
+                };
+            console.log("Admin changed: ", data);
             });
 
         });
-
-
-
-
-
-        // $(function () {
-        //     $('#timepicker-start').datetimepicker({
-        //         daysOfWeekDisabled: [0, 6],
-        //         disabledTimeIntervals: [[moment({ h: 0 }), moment({ h: 8 })], [moment({ h: 18 }), moment({ h: 24 })]],
-        //         format: 'LT'
-        //
-        //     });
-        //     $('#timepicker-start').on("change.datetimepicker", function (e) {
-        //         //console.log(e.date);
-        //         $('#start_time').val(e.date);
-        //     });
-        // });
 
     </script>
     @parent

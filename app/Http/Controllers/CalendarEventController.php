@@ -8,10 +8,18 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Calendar;
-use Javascript;
 
 class CalendarEventController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
@@ -60,7 +68,7 @@ class CalendarEventController extends Controller
 
         $calendarOptions = [
             'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
-            'defaultView' => 'agendaWeek',
+            'defaultView' => 'agendaDay',
             'weekends' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',
@@ -69,21 +77,23 @@ class CalendarEventController extends Controller
             'navLinks' => true
         ];
 
-        $calendar_events = CalendarEvent::where('admin_id', $request->input('selectAdmin'))->get();
+        $admin_id = $request->input('selectAdmin');
+        $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get();
 
         // TODO: Currently provides range of times for all days - needs to be per day
         $disabledTimeRanges = [];
         foreach ($calendar_events as $k => $event) {
             $start = $event->start->toTimeString();
             $end = $event->end->toTimeString();
-            $disabledTimeRanges[] = [substr("$start", 0, 5), substr("$end", 0, 5)];
+            $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
         }
         //dd($disabledTimeRanges);
         \JavaScript::put(['disabledTimes' => [$disabledTimeRanges]]);
+        //dd($disabledTimeRanges);
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
 
-        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges'));
+        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges', 'admin_id'));
     }
 
     /**
