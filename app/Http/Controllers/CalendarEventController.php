@@ -39,7 +39,8 @@ class CalendarEventController extends Controller
             'minTime' => '08:00:00',
             'maxTime' => '18:00:00',
             'weekNumbers' => true,
-            'navLinks' => true
+            'navLinks' => true,
+            'locale' => 'en-gb'
         ];
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
@@ -74,7 +75,8 @@ class CalendarEventController extends Controller
             'minTime' => '08:00:00',
             'maxTime' => '18:00:00',
             'weekNumbers' => true,
-            'navLinks' => true
+            'navLinks' => true,
+            'locale' => 'en-gb'
         ];
 
         $admin_id = $request->input('selectAdmin');

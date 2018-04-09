@@ -108,7 +108,10 @@
 
         $(function () {
 
-            var date = $('#datepicker-start').datetimepicker('viewDate').startOf('day');
+            var calendar = $('.fc').fullCalendar('getCalendar');
+            calendar.option('locale', 'en-gb');
+            var datePicker = $('#datepicker-start');
+            var date = datePicker.datetimepicker('viewDate').startOf('day');
             console.log('Date: ', date.toString());
             var time = '00:00';
 
@@ -125,17 +128,17 @@
                         //console.log("a Match!")
                     }
                 });
-                console.log('Disabled times: ', dTimes);
+                //console.log('Disabled times: ', dTimes);
                 return dTimes;
             }
 
             function updateStartTime(date, time) {
                 //time = typeof time !== 'undefined' ? time : '00:00';
-                console.log(time, date.toString());
+                //console.log(time, date.toString());
                 // TODO: next line needed?
                 date.startOf('day');
                 date.add(moment.duration(time));
-                console.log(date.toString());
+                //console.log(date.toString());
                 $('#start').val(date);
                 console.log("updateStartTime: ", date.toString());
                 return date;
@@ -155,7 +158,7 @@
             }
 
             // Set up datepicker options
-            $('#datepicker-start').datetimepicker({
+            datePicker.datetimepicker({
                 daysOfWeekDisabled: [0, 6],
                 disabledTimeIntervals: [[moment({ h: 0 }), moment({ h: 8 })], [moment({ h: 18 }), moment({ h: 24 })]],
                 locale: 'en-gb',
@@ -167,17 +170,31 @@
             updateTimePicker(dTimes);
 
             // on date change - update disabled times; update startDatetime
-            $('#datepicker-start').on("change.datetimepicker", function (e) {
-                console.log("Date changed: ", e.date.format('L'));
+            datePicker.on("change.datetimepicker", function (e) {
+                //console.log("Date changed: ", e.date.format('L'));
                 updateTimePicker(getDisabledTimes(e.date));
                 date = e.date;
+                calendar.gotoDate(e.date);
                 updateStartTime(e.date, time);
+            });
+
+            // on FullCalendar date change - update dTimes, update start
+            calendar.on('viewRender', function(view, element){
+                // getDate seemed to ignore locale, so using moment().local() to force this
+                date = calendar.getDate().local();
+                //console.log('DATE: ', date.toString());
+                datePicker.datetimepicker('date', date);
+                datePicker.datetimepicker('format', 'L');
+                // below updated by timepicker TODO: refactor into function
+                //updateTimePicker(getDisabledTimes(date));
+                //updateStartTime(date, time);
+                //console.log('fc: ', date.toString());
             });
 
             // on time change - update startDatetime
             $('#timePicker').on('changeTime', function() {
                 time = $(this).val();
-                console.log("Time changed: ", time);
+                //console.log("Time changed: ", time);
                 updateStartTime(date, time);
             });
 
