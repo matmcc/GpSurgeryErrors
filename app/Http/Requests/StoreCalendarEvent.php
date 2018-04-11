@@ -26,9 +26,9 @@ class StoreCalendarEvent extends FormRequest
     {
 
         return [
-            'title' => 'nullable|max:255',
+            //'title' => 'nullable|max:255',
             'start' => ['required', 'date', new CalendarEventClash($this->selectAdmin)],
-            'selectAdmin' => 'required',
+            //'selectAdmin' => 'required',
         ];
     }
 }

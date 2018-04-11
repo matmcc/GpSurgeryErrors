@@ -10,9 +10,9 @@
 
 @section('content')
     <div class="page-header">
-        <h1>CalendarEvents / Create </h1>
+        <h3>Book Appointment with {{ $admins[$admin_id] }}</h3>
     </div>
-
+    <hr>
 
     <div class="">
         <div class="col-md-12">
@@ -23,11 +23,12 @@
 
             <form action="{{ route('calendar_events.store') }}" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="selectAdmin" value="{{ $admin_id }}">
 
-                <div class="form-group">
-                     <label for="title">Title</label>
-                     <input type="text" id="'title" name="title" class="form-control" value=""/>
-                </div>
+                {{--<div class="form-group">--}}
+                     {{--<label for="title">Title</label>--}}
+                     {{--<input type="text" id="'title" name="title" class="form-control" value=""/>--}}
+                {{--</div>--}}
 
 
                 <div class="form-group">
@@ -60,27 +61,35 @@
                 </div>
 
 
-                <div class="form-group">
-                    <label for="selectAdmin_id"></label>
-                    <div class="">
-                        @include('layouts.selectBookable',
-                        ['name' => 'selectAdmin', 'id' => 'selectAdmin_id', 'admin' => $admin_id])
+                {{--<div class="form-group">--}}
+                    {{--<label for="selectAdmin_id"></label>--}}
+                    {{--<div class="">--}}
+                        {{--@include('layouts.selectBookable',--}}
+                        {{--['name' => 'selectAdmin', 'id' => 'selectAdmin_id', 'admin' => $admin_id, ])--}}
 
-                        @if ($errors->has('selectAdmin'))
-                            <span class="invalid-feedback">
-                                            <strong>{{ $errors->first('selectAdmin') }}</strong>
-                                        </span>
-                        @endif
-                    </div>
+                        {{--@if ($errors->has('selectAdmin'))--}}
+                            {{--<span class="invalid-feedback">--}}
+                                            {{--<strong>{{ $errors->first('selectAdmin') }}</strong>--}}
+                                        {{--</span>--}}
+                        {{--@endif--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+
+
+                <div class="row justify-content-end" style="padding-top: 20px">
+
+                        <div class="col-1">
+                            <a class="btn btn-outline-warning" href="{{ route('calendar_events.index') }}">Back</a>
+                        </div>
+                        <div class="col-3">
+                            <input class="btn btn-success btn-block" type="submit" value="Create"/>
+                        </div>
+
                 </div>
-
-
-                    <a class="btn btn-default" href="{{ route('calendar_events.index') }}">Back</a>
-                    <button class="btn btn-primary" type="submit" >Create</button>
 
             </form>
         </div>
-
+    <hr>
     </div>
 
     <br>
@@ -102,6 +111,15 @@
     @if(! empty($calendar))
         {!! $calendar->script() !!}
     @endif
+    <!-- jQuery AJAX setup -->
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/js/tempusdominus-bootstrap-4.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
     <script type="text/javascript">
@@ -117,6 +135,26 @@
 
             console.log(JsVar.disabledTimes[0]);
 
+            function getDisabledTimesByAjax(date) {
+                var dTimes = [];
+                $.getJSON('events/' + JsVar.admin)
+                    .done(function (data) {
+                        $.each(data, function (i, event) {
+                            var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
+                            if($start.isSame(date, 'day')) {
+                                var $end = moment(event.end, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
+                                dTimes.push([$start.format('H:mm'), $end.format('H:mm')])
+                            }
+                        })
+                    })
+                    .fail(function () {
+                        console.log('AJAX call failed')
+                    });
+                console.log('Disabled times: ', dTimes);
+
+                return dTimes;
+            }
+
             function getDisabledTimes (date) {
                 var dTimes = [];
 
@@ -128,7 +166,7 @@
                         //console.log("a Match!")
                     }
                 });
-                //console.log('Disabled times: ', dTimes);
+                // console.log('Disabled times: ', dTimes);
                 return dTimes;
             }
 
@@ -146,6 +184,7 @@
 
             // timepicker seems to mangle times passed into disableTimeRanges
             function updateTimePicker (disabledTimes) {
+                console.log("updating timepicker:", disabledTimes);
                 $('#timePicker').timepicker({
                     'timeFormat': 'H:i',
                     'step': 30,
@@ -166,13 +205,14 @@
             });
 
             // Init timepicker
-            var dTimes = getDisabledTimes(date);
+            //var dTimes = getDisabledTimes(date);
+            var dTimes = getDisabledTimesByAjax(date);
             updateTimePicker(dTimes);
 
             // on date change - update disabled times; update startDatetime
             datePicker.on("change.datetimepicker", function (e) {
                 //console.log("Date changed: ", e.date.format('L'));
-                updateTimePicker(getDisabledTimes(e.date));
+                updateTimePicker(getDisabledTimesByAjax(e.date));
                 date = e.date;
                 calendar.gotoDate(e.date);
                 updateStartTime(e.date, time);
@@ -184,6 +224,7 @@
                 date = calendar.getDate().local();
                 //console.log('DATE: ', date.toString());
                 datePicker.datetimepicker('date', date);
+                datePicker.datetimepicker('locale', 'en-gb');
                 datePicker.datetimepicker('format', 'L');
                 // below updated by timepicker TODO: refactor into function
                 //updateTimePicker(getDisabledTimes(date));

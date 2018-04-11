@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin;
 use App\CalendarEvent;
 use App\Http\Requests;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,6 +21,16 @@ class CalendarEventController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    public function eventsByAdmin(Admin $admin_id)
+    {
+        return $admin_id->events()->get();
+    }
+
+    public function eventsByUser(User $user_id)
+    {
+        return $user_id->events()->get();
     }
 
     /**
@@ -45,7 +57,9 @@ class CalendarEventController extends Controller
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
 
-        return view('calendar_events.index', compact('calendar_events', 'calendar'));
+        $admins = Admin::all()->pluck('name', 'id');
+
+        return view('calendar_events.index', compact('calendar_events', 'calendar', 'admins'));
     }
 
     /**
@@ -80,6 +94,7 @@ class CalendarEventController extends Controller
         ];
 
         $admin_id = $request->input('selectAdmin');
+        $admins = Admin::all()->pluck('name', 'id');
         $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get();
 
         // TODO: Currently provides range of times for all days - needs to be per day
@@ -90,12 +105,12 @@ class CalendarEventController extends Controller
             $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
         }
         //dd($disabledTimeRanges);
-        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges]]);
+        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges], 'admin' => $admin_id]);
         //dd($disabledTimeRanges);
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
 
-        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges', 'admin_id'));
+        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges', 'admin_id', 'admins'));
     }
 
     /**
@@ -124,6 +139,7 @@ class CalendarEventController extends Controller
      */
     public function store(Requests\StoreCalendarEvent $request)
     {
+        //dd($request);
         $calendar_event = new CalendarEvent();
         // Validation in type-hinted form request
         $this->saveCalendarEvent($request, $calendar_event);
