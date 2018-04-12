@@ -129,71 +129,53 @@
             var calendar = $('.fc').fullCalendar('getCalendar');
             calendar.option('locale', 'en-gb');
             var datePicker = $('#datepicker-start');
+
             var date = datePicker.datetimepicker('viewDate').startOf('day');
             console.log('Date: ', date.toString());
             var time = '00:00';
+            var admin_id = JsVar.admin;
 
-            console.log(JsVar.disabledTimes[0]);
+            // was used before AJAX request in next function
+            // appended into footer - uses PHP-Var-to-JS to access
+            // console.log(JsVar.disabledTimes[0]);
 
             function getDisabledTimesByAjax(date) {
                 var dTimes = [];
-                $.getJSON('events/' + JsVar.admin)
-                    .done(function (data) {
-                        $.each(data, function (i, event) {
-                            var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
-                            if($start.isSame(date, 'day')) {
-                                var $end = moment(event.end, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
-                                dTimes.push([$start.format('H:mm'), $end.format('H:mm')])
-                            }
+                $.when(
+                    $.getJSON('events/' + admin_id, function (data) {
+                            $.each(data, function (i, event) {
+                                var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
+                                if($start.isSame(date, 'day')) {
+                                    var $end = moment(event.end, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
+                                    dTimes.push([$start.format('H:mm'), $end.format('H:mm')]);
+                                }
+                            })
                         })
-                    })
-                    .fail(function () {
-                        console.log('AJAX call failed')
+                ).then( function() {
+                    console.log('Disabled times: ', dTimes);
+                    //updateTimePicker(dTimes);
+                    $('#timePicker').timepicker({
+                        'timeFormat': 'H:i',
+                        'step': 30,
+                        'forceRoundTime': true,
+                        //'useSelect': true,
+                        'minTime': '8am',
+                        'maxTime': '5:30pm',
+                        'disableTimeRanges': dTimes
                     });
-                console.log('Disabled times: ', dTimes);
-
-                return dTimes;
-            }
-
-            function getDisabledTimes (date) {
-                var dTimes = [];
-
-                JsVar.disabledTimes[0].forEach(function (e) {
-                    //console.log('dTimes_ date: ', date.startOf('day').toString(), 'also: ', moment(e[0]).toString());
-                    if (moment(e[0]).isSame(date.startOf('day'))) {
-                        dTimes.push(e[1]);
-                        //console.log((e[1]));
-                        //console.log("a Match!")
-                    }
+                    return dTimes;
                 });
-                // console.log('Disabled times: ', dTimes);
-                return dTimes;
             }
+            // TODO: Change JSON request to include date
 
             function updateStartTime(date, time) {
                 //time = typeof time !== 'undefined' ? time : '00:00';
-                //console.log(time, date.toString());
                 // TODO: next line needed?
                 date.startOf('day');
                 date.add(moment.duration(time));
-                //console.log(date.toString());
                 $('#start').val(date);
                 console.log("updateStartTime: ", date.toString());
                 return date;
-            }
-
-            // timepicker seems to mangle times passed into disableTimeRanges
-            function updateTimePicker (disabledTimes) {
-                console.log("updating timepicker:", disabledTimes);
-                $('#timePicker').timepicker({
-                    'timeFormat': 'H:i',
-                    'step': 30,
-                    'forceRoundTime': true,
-                    //'useSelect': true,
-                    'minTime': '8am',
-                    'maxTime': '5:30pm',
-                    'disableTimeRanges': disabledTimes
-                });
             }
 
             // Set up datepicker options
@@ -205,14 +187,12 @@
             });
 
             // Init timepicker
-            //var dTimes = getDisabledTimes(date);
-            var dTimes = getDisabledTimesByAjax(date);
-            updateTimePicker(dTimes);
+            getDisabledTimesByAjax(date);
+
 
             // on date change - update disabled times; update startDatetime
             datePicker.on("change.datetimepicker", function (e) {
-                //console.log("Date changed: ", e.date.format('L'));
-                updateTimePicker(getDisabledTimesByAjax(e.date));
+                getDisabledTimesByAjax(e.date);
                 date = e.date;
                 calendar.gotoDate(e.date);
                 updateStartTime(e.date, time);
@@ -222,20 +202,14 @@
             calendar.on('viewRender', function(view, element){
                 // getDate seemed to ignore locale, so using moment().local() to force this
                 date = calendar.getDate().local();
-                //console.log('DATE: ', date.toString());
                 datePicker.datetimepicker('date', date);
                 datePicker.datetimepicker('locale', 'en-gb');
                 datePicker.datetimepicker('format', 'L');
-                // below updated by timepicker TODO: refactor into function
-                //updateTimePicker(getDisabledTimes(date));
-                //updateStartTime(date, time);
-                //console.log('fc: ', date.toString());
             });
 
             // on time change - update startDatetime
             $('#timePicker').on('changeTime', function() {
                 time = $(this).val();
-                //console.log("Time changed: ", time);
                 updateStartTime(date, time);
             });
 
