@@ -61,19 +61,19 @@
                 </div>
 
 
-                {{--<div class="form-group">--}}
-                    {{--<label for="selectAdmin_id"></label>--}}
-                    {{--<div class="">--}}
-                        {{--@include('layouts.selectBookable',--}}
-                        {{--['name' => 'selectAdmin', 'id' => 'selectAdmin_id', 'admin' => $admin_id, ])--}}
+                <div class="form-group">
+                    <label for="selectAdmin_id"></label>
+                    <div class="">
+                        @include('layouts.selectBookable',
+                        ['name' => 'selectAdmin', 'id' => 'selectAdmin_id', 'admin' => $admin_id, ])
 
-                        {{--@if ($errors->has('selectAdmin'))--}}
-                            {{--<span class="invalid-feedback">--}}
-                                            {{--<strong>{{ $errors->first('selectAdmin') }}</strong>--}}
-                                        {{--</span>--}}
-                        {{--@endif--}}
-                    {{--</div>--}}
-                {{--</div>--}}
+                        @if ($errors->has('selectAdmin'))
+                            <span class="invalid-feedback">
+                                            <strong>{{ $errors->first('selectAdmin') }}</strong>
+                                        </span>
+                        @endif
+                    </div>
+                </div>
 
 
                 <div class="row justify-content-end" style="padding-top: 20px">
@@ -126,14 +126,16 @@
 
         $(function () {
 
-            var calendar = $('.fc').fullCalendar('getCalendar');
-            calendar.option('locale', 'en-gb');
             var datePicker = $('#datepicker-start');
-
             var date = datePicker.datetimepicker('viewDate').startOf('day');
             console.log('Date: ', date.toString());
             var time = '00:00';
             var admin_id = JsVar.admin;
+            var disabledTimes = [];
+
+            var calendar = $('.fc').fullCalendar('getCalendar');
+            calendar.option('locale', 'en-gb');
+            $('.fc').fullCalendar({events: 'events/' + admin_id});
 
             // was used before AJAX request in next function
             // appended into footer - uses PHP-Var-to-JS to access
@@ -154,6 +156,7 @@
                 ).then( function() {
                     console.log('Disabled times: ', dTimes);
                     //updateTimePicker(dTimes);
+                    $('#timePicker').timepicker('remove');
                     $('#timePicker').timepicker({
                         'timeFormat': 'H:i',
                         'step': 30,
@@ -163,7 +166,7 @@
                         'maxTime': '5:30pm',
                         'disableTimeRanges': dTimes
                     });
-                    return dTimes;
+                    disabledTimes = dTimes;
                 });
             }
             // TODO: Change JSON request to include date
@@ -187,6 +190,15 @@
             });
 
             // Init timepicker
+            // $('#timePicker').timepicker({
+            //     'timeFormat': 'H:i',
+            //     'step': 30,
+            //     'forceRoundTime': true,
+            //     //'useSelect': true,
+            //     'minTime': '8am',
+            //     'maxTime': '5:30pm',
+            //     'disableTimeRanges': disabledTimes
+            // });
             getDisabledTimesByAjax(date);
 
 
@@ -218,10 +230,11 @@
             });
 
             $('#selectAdmin_id').on('change', function() {
-                var data = {
-                    'admin_id': $(this).val()
-                };
-            console.log("Admin changed: ", data);
+                admin_id = $(this).val();
+                $('.fc').fullCalendar('removeEvents');
+                $('.fc').fullCalendar('addEventSource', 'events/' + admin_id);
+                getDisabledTimesByAjax(date);
+                console.log("Admin changed: ", admin_id);
             });
 
         });

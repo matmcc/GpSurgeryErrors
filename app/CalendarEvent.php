@@ -14,6 +14,14 @@ class CalendarEvent extends Model implements IdentifiableEvent
     protected $dates = ['start', 'end'];
     protected $attributes = ['is_all_day' => 0];
     protected $fillable = ['event_name', 'user_id', 'admin_id', 'start_datetime', 'end_datetime', 'is_all_day'];
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    //TODO: Build from array keys in constructor?
+    protected $appends = ['color', 'overlap', 'startEditable',
+        'durationEditable', 'url', 'rendering'];
 
     // IdentifiableEvent implementation
     // -----------------------------------------------------------------------------------------
@@ -118,6 +126,50 @@ class CalendarEvent extends Model implements IdentifiableEvent
                 // 'className' => something to set style per dr ?
             ];
         }
+        else {
+            return [
+                'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
+                'overlap' => false,
+                'startEditable' => $this->eventBelongsToUser(),
+                'durationEditable' => false,
+                'url' => route('calendar_events.show', $this->id),
+                'rendering' => $this->eventBelongsToUser() ? '' : 'background',
+                // 'className' => something to set style per dr ?
+            ];
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // Accessor's to append Event options to JSON
+
+    public function getColorAttribute()
+    {
+        return $this->getEventOptions()['color'];
+    }
+
+    public function getOverlapAttribute()
+    {
+        return $this->getEventOptions()['overlap'];
+    }
+
+    public function getStartEditableAttribute()
+    {
+        return $this->getEventOptions()['startEditable'];
+    }
+
+    public function getDurationEditableAttribute()
+    {
+        return $this->getEventOptions()['durationEditable'];
+    }
+
+    public function getUrlAttribute()
+    {
+        return $this->getEventOptions()['url'];
+    }
+
+    public function getRenderingAttribute()
+    {
+        return $this->getEventOptions()['rendering'];
     }
 
     // -----------------------------------------------------------------------------------------

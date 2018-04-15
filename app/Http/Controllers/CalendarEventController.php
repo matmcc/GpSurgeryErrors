@@ -96,6 +96,7 @@ class CalendarEventController extends Controller
         $admin_id = $request->input('selectAdmin');
         $admins = Admin::all()->pluck('name', 'id');
         $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get();
+        //$calendar_events = route("calendar_events.events.admin", $admin_id);
 
         // TODO: Currently provides range of times for all days - needs to be per day
         $disabledTimeRanges = [];
