@@ -95,7 +95,7 @@
     <br>
 
     <div class="card">
-        <div class="card-header">
+        <div class="card-header" id="calHeader">
             Calendar
         </div>
         <div class="card-body">
@@ -136,6 +136,16 @@
             var calendar = $('.fc').fullCalendar('getCalendar');
             calendar.option('locale', 'en-gb');
             $('.fc').fullCalendar({events: 'events/' + admin_id});
+
+            $( "#loadAjax" ).hide();
+            $( document ).ajaxStart(function() {
+                $( "#calHeader" ).addClass('bg-info').addClass('text-center');
+                $( "#calHeader" ).text('Loading Calendar Events');
+            });
+            $( document ).ajaxComplete(function() {
+                $( "#calHeader" ).removeClass('bg-info').removeClass('text-center');
+                $( "#calHeader" ).text('Calendar');
+            });
 
             // was used before AJAX request in next function
             // appended into footer - uses PHP-Var-to-JS to access
