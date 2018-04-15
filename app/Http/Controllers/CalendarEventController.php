@@ -20,7 +20,7 @@ class CalendarEventController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:web,admin');
     }
 
     public function eventsByAdmin(Admin $admin_id)
