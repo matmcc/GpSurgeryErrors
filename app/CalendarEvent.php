@@ -97,7 +97,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
             $user = Auth::user();
             if ($user->job_title == 'admin') {
                 return [
-                    'color' => $this->background_color,
+                    'color' => $this->admin()->first()->color,
                     'overlap' => false,
                     'startEditable' => true,
                     'durationEditable' => true,
@@ -106,7 +106,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
             }
             else {
                 return [
-                    'color' => $this->eventBelongsToAdmin() ? $this->background_color : '#ff9f89',
+                    'color' => $this->eventBelongsToAdmin() ? $this->admin()->first()->color : '#ff9f89',
                     'overlap' => false,
                     'startEditable' => $this->eventBelongsToAdmin(),
                     'durationEditable' => $this->eventBelongsToAdmin(),
@@ -117,7 +117,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
         }
         else if (Auth::check()) {
             return [
-                'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
+                'color' => $this->eventBelongsToUser() ? $this->admin()->first()->color : '#ff9f89',
                 'overlap' => false,
                 'startEditable' => $this->eventBelongsToUser(),
                 'durationEditable' => false,
@@ -128,7 +128,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
         }
         else {
             return [
-                'color' => $this->eventBelongsToUser() ? $this->background_color : '#ff9f89',
+                'color' => $this->eventBelongsToUser() ? $this->admin()->first()->color : '#ff9f89',
                 'overlap' => false,
                 'startEditable' => $this->eventBelongsToUser(),
                 'durationEditable' => false,

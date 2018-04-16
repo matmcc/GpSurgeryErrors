@@ -11,6 +11,39 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Calendar;
 
+/**
+ * TODOS
+ * Todo: Add validation to update
+ * Todo: build forms for edit, view
+ * Todo: add email notifications
+ *
+ * Todo: Admin view - what is needed?
+ * Todo: Admin: table of todays events? Filtered by admin
+ * Todo: Admin: filter events by user
+ * Todo: Admin: helper to search user by email, name, etc?
+ *
+ * Todo: DONE add faker color to admins DONE - could pick nicer colours
+ * Todo: DONE add colours to Calendar events DONE
+ * Todo: add name logic for title == null
+ * Todo: ... then remove names from seeder
+ *
+ * Todo: add prescription model, v, c
+ * Todo: add results model, v, c
+ *
+ * Todo: add Parsley JS validation to registration form and other inputs
+ *
+ * Todo: add fullcalendar callbacks to update events if dragged
+ * Todo: add fc callbacks for times
+ * Todo: add fc draggable to create event ?
+ *
+ * Todo: test bootstrap for resizeable design
+ *
+ * Todo: Build front page, contacts page,
+ * Todo: Chat?
+ *
+ * Class CalendarEventController
+ * @package App\Http\Controllers
+ */
 class CalendarEventController extends Controller
 {
     /**
