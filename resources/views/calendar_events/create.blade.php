@@ -25,12 +25,6 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="selectAdmin" value="{{ $admin_id }}">
 
-                {{--<div class="form-group">--}}
-                     {{--<label for="title">Title</label>--}}
-                     {{--<input type="text" id="'title" name="title" class="form-control" value=""/>--}}
-                {{--</div>--}}
-
-
                 <div class="form-group">
                     <div class="input-group date" id="datepicker-start" data-target-input="nearest">
                         <div class="input-group-prepend">
@@ -39,7 +33,7 @@
                         <input type="text" id="datepicker-start" class="form-control datetimepicker-input" data-target="#datepicker-start"/>
                         <div class="input-group-append" data-target="#datepicker-start" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
+                        </div>
                     </div>
 
                     <input type="hidden" name="start" id="start" value=""/>
