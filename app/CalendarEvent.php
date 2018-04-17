@@ -20,7 +20,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
      * @var array
      */
     //TODO: Build from array keys in constructor?
-    protected $appends = ['color', 'overlap', 'startEditable',
+    protected $appends = ['userName', 'adminName', 'color', 'overlap', 'startEditable',
         'durationEditable', 'url', 'rendering'];
 
     // IdentifiableEvent implementation
@@ -141,6 +141,16 @@ class CalendarEvent extends Model implements IdentifiableEvent
 
     // -----------------------------------------------------------------------------------------
     // Accessor's to append Event options to JSON
+
+    public function getUserNameAttribute()
+    {
+        return $this->user()->name;
+    }
+
+    public function getAdminNameAttribute()
+    {
+        return $this->admin()->name;
+    }
 
     public function getColorAttribute()
     {

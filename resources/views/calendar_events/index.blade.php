@@ -10,6 +10,45 @@
         <div class="col-md-12">
             @if(Auth::guard('admin')->check())
                 <!-- Admin section -->
+                <form class="form"
+                      id="searchName"
+                      action="{{ route('calendar_events.events.userName') }}"
+                      method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="searchName_preText">Events by user:</span>
+                        </div>
+                            <input class="form-control"
+                                   name="searchNameValue"
+                                   id="searchNameField"
+                                   type="text"
+                                   placeholder="Search by name or email"
+                                   aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+
+                <form action="{{ route('calendar_events.events.admin') }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @include('layouts.selectBookable',
+                                ['name' => 'selectAdmin',
+                                'id' => 'selectAdmin_id',
+                                'prepend' => 'Events by admin:',
+                                'button' => '<button class="btn btn-outline-success" type="submit">Search</button>'])
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+
+                        </div>
+                    </div>
+                </form>
+
                 <table class="table table-striped">
 
                     <thead>
@@ -24,7 +63,7 @@
                     <tbody>
                     @foreach($calendar_events_sorted as $event)
                         <tr>
-                            <td>{{$event->start->format('H:i')}}</td>
+                            <td>{{$event->start->format('jS \\of F \\a\\t H:i')}}</td>
                             <td>{{$event->admin()->first()->name}}</td>
                             <td>{{$event->user()->first()->name}}</td>
 
@@ -141,4 +180,24 @@
 
 @section('script')
     {!! $calendar->script() !!}
+
+    <script>
+        $(".dropdown-toggle").dropdown();
+
+        // var $tableRows;
+        // $("#searchName").bind('submit', function (e) {
+        //     console.log($("#searchNameField").val());
+        //     $.getJSON('calendar_events/events/byname/' + $("#searchNameField").val(), function(data) {
+        //         $.each(data, function(i, e) {
+        //             $tableRows += "<tr>";
+        //             $tableRows += "<td>";
+        //
+        //             $tableRows += "</td>";
+        //             $tableRows += "</tr>";
+        //         })
+        //     });
+        //     e.preventDefault();
+        //     return false;
+        // });
+    </script>
 @endsection

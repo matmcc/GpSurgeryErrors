@@ -6,6 +6,9 @@ use App\Admin;
 use App\CalendarEvent;
 use App\Http\Requests;
 use App\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,9 +24,11 @@ use Calendar;
  * Note: show, edit, allow for additional features to be built, e.g. email re: event
  *
  * Todo: Admin view - what is needed?
- * Todo: Admin: table of todays events? Filtered by admin
- * Todo: Admin: filter events by user
- * Todo: Admin: helper to search user by email, name, etc?
+ * Todo: DONE Admin: table of todays events?
+ * Todo: DONE Admin: ... Filtered by admin?
+ * Todo: DONE Admin: filter events by user
+ * Todo: DONE Admin: helper to search user by email, name, etc?
+ * Todo: Pagination
  *
  * Todo: DONE add faker color to admins DONE - could pick nicer colours
  * Todo: DONE add colours to Calendar events DONE
@@ -67,6 +72,87 @@ class CalendarEventController extends Controller
     public function eventsByUser(User $user_id)
     {
         return $user_id->events()->get();
+    }
+
+    /**
+     *
+     * @param array|Collection      $items
+     * @param int   $perPage
+     * @param int  $page
+     * @param array $options
+     *
+     * @return LengthAwarePaginator
+     */
+    public function paginate($items, $perPage = 15, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
+
+    public function eventsByUserName(Request $request)
+    {
+        $name = $request->input('searchNameValue');
+        $uCname = ucwords($name);
+        $firstname = preg_split('/\s+/', $uCname)[0];
+
+        $results = collect();
+
+        $users = User::where('name', '=', "$uCname")
+        ->orWhere('name', 'like', "$firstname%")
+        ->orWhere('email', '=', mb_strtolower($name))
+        ->get();
+
+        foreach ($users as $user) {
+            $results = $results->merge($user->events()->get()->sortBy('start'));
+        }
+//        dd($results); // toJson() is breaking - worked in web.php
+//        return $results;
+        $calendar_events = $calendar_events_sorted = $results;
+        //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
+
+        $calendarOptions = [
+            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
+            'defaultView' => 'agendaWeek',
+            'weekends' => false,
+            'slotDuration' => '00:30:00',
+            'minTime' => '08:00:00',
+            'maxTime' => '18:00:00',
+            'weekNumbers' => true,
+            'navLinks' => true,
+            'locale' => 'en-gb'
+        ];
+
+        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+
+        $admins = Admin::all()->pluck('name', 'id');
+
+        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
+    }
+    public function eventsByAdminPost(Request $request)
+    {
+        $admin = Admin::find($request->input('selectAdmin'));
+
+        $calendar_events = $calendar_events_sorted = $admin->events()->get()->sortby('start');
+        //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
+
+        $calendarOptions = [
+            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
+            'defaultView' => 'agendaWeek',
+            'weekends' => false,
+            'slotDuration' => '00:30:00',
+            'minTime' => '08:00:00',
+            'maxTime' => '18:00:00',
+            'weekNumbers' => true,
+            'navLinks' => true,
+            'locale' => 'en-gb'
+        ];
+
+        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+
+        $admins = Admin::all()->pluck('name', 'id');
+
+        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
     }
 
     /**
