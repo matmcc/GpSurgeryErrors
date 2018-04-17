@@ -2,13 +2,54 @@
 
 @section('content')
     <div class="page-header">
-        <h3>Your Appointments</h3>
+        <h3>Appointments</h3>
     </div>
 
 
     <div class="row">
         <div class="col-md-12">
+            @if(Auth::guard('admin')->check())
+                <!-- Admin section -->
+                <table class="table table-striped">
 
+                    <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Staff</th>
+                        <th>User</th>
+                        <th class="text-right">Options</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    @foreach($calendar_events_sorted as $event)
+                        <tr>
+                            <td>{{$event->start->format('H:i')}}</td>
+                            <td>{{$event->admin()->first()->name}}</td>
+                            <td>{{$event->user()->first()->name}}</td>
+
+                            <td class="text-right">
+                                <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
+                                    <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>
+                                    <a class="btn btn-outline-warning btn-sm" href="{{ route('calendar_events.edit', $event->id) }}">Edit</a>
+                                    <form action="{{ route('calendar_events.destroy', $event->id) }}"
+                                          method="POST"
+                                          onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+
+                </table>
+
+                <!-- End Admin section -->
+            @elseif(Auth::guard('web')->check())
+                <!-- User section -->
             <table class="table table-striped">
 
                 <thead>
@@ -74,6 +115,8 @@
                     </div>
                 </div>
             </form>
+            @endif
+            <!-- End User section -->
 
         </div>
     </div>

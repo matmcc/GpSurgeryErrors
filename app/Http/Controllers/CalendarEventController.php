@@ -17,6 +17,9 @@ use Calendar;
  * Todo: build forms for edit, view
  * Todo: add email notifications
  *
+ * Todo: Fix availability calendar in user view
+ * Note: show, edit, allow for additional features to be built, e.g. email re: event
+ *
  * Todo: Admin view - what is needed?
  * Todo: Admin: table of todays events? Filtered by admin
  * Todo: Admin: filter events by user
@@ -74,6 +77,9 @@ class CalendarEventController extends Controller
     public function index()
     {
         $calendar_events = CalendarEvent::all();
+        $today = Carbon::today()->toDateString();
+        $calendar_events_sorted = CalendarEvent::whereDate('start', '=', $today)
+            ->get()->sortby('start');
 
         // TODO: Build Calendar class for options and docs
         $calendarOptions = [
@@ -92,7 +98,7 @@ class CalendarEventController extends Controller
 
         $admins = Admin::all()->pluck('name', 'id');
 
-        return view('calendar_events.index', compact('calendar_events', 'calendar', 'admins'));
+        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
     }
 
     /**
