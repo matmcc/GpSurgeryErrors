@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Prescription;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class PrescriptionController extends Controller
 {
@@ -14,7 +17,11 @@ class PrescriptionController extends Controller
      */
     public function index()
     {
-        //
+        $id = Auth::id();
+        $user = User::find($id);
+        $prescriptions = $user->prescriptions()->get();
+
+        return view('prescriptions.prescriptions', compact('prescriptions'));
     }
 
     /**
