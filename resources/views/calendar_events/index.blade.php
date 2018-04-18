@@ -89,6 +89,13 @@
                 <!-- End Admin section -->
             @elseif(Auth::guard('web')->check())
                 <!-- User section -->
+            @if(count($calendar_events) == 0)
+                @component('layouts.empty')
+                    <strong>You do not have any appointments.</strong>
+                    <br>You can use the select box below to choose a Dr or Nurse with whom to book an apppointment.
+                    <br>The calendar below shows the general availability of appointments.
+                @endcomponent
+            @else
             <table class="table table-striped">
 
                 <thead>
@@ -137,6 +144,7 @@
                 </tbody>
 
             </table>
+            @endif
 
             <form action="{{ route('calendar_events.create.admin') }}" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

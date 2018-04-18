@@ -16,6 +16,13 @@
             Your Prescriptions
         </div>
         <div class="card-body">
+        @if(count($prescriptions) == 0)
+            @component('layouts.empty')
+                    <strong>You do not have any prescriptions.</strong>
+                    <br>Although you can extend your prescriptions here after a Dr has initially prescribed them,
+                    all prescription-only medicines must first be prescribed by a Dr.
+            @endcomponent
+        @else
             <div class="table-responsive-md">
             <table class="table table-striped">
 
@@ -45,6 +52,7 @@
                 </tbody>
 
             </table>
+            @endif
             </div>
         </div>
     </div>
