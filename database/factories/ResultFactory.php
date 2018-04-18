@@ -4,8 +4,8 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Result::class, function (Faker $faker) {
     return [
-        'name'=> 'Result:'.$faker->realText(20),
-        'body' => $faker->paragraph(5),
-        'dateTime' => $faker->dateTimeThisYear('now')
+        'name'=> 'Result: '.$faker->sentence(3),
+        'body' => $faker->paragraph(8),
+        'date' => $faker->dateTimeThisYear('now')
     ];
 });
