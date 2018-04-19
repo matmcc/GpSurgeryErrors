@@ -40,7 +40,7 @@
 
                         <td class="text-right">
                             @if($prescription->isRenewable)
-                                <a href="" class="btn btn-outline-success">Renew</a>
+                                <a href="{{ route('prescriptions.renew', ['prescription' => $prescription]) }}" class="btn btn-outline-success">Renew</a>
                             @endif
                             <a href="{{ 'https://en.wikipedia.org/wiki/'.$prescription->name }}"
                                class="btn btn-outline-info"

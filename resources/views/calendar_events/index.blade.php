@@ -190,7 +190,7 @@
     {!! $calendar->script() !!}
 
     <script>
-        $(".dropdown-toggle").dropdown();
+        // $(".dropdown-toggle").dropdown();
 
         // var $tableRows;
         // $("#searchName").bind('submit', function (e) {

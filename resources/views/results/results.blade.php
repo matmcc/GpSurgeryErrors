@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
-@section('style')
-@endsection
-
-
 @section('content')
-@if(count($results) == 0)
+    <div class="page-header">
+        <h3>Results</h3>
+    </div>
+    <hr>
+
+    @if(count($results) == 0)
     @component('layouts.empty')
         <strong>You do not have any test results.</strong>
         <br>If you believe you should have results, please get in touch.
@@ -35,8 +36,4 @@
    @endforeach
     </div>
 @endif
-@endsection
-
-
-@section('script')
 @endsection

@@ -64,7 +64,9 @@ class PrescriptionController extends Controller
      */
     public function edit(Prescription $prescription)
     {
-        //
+        \Session::flash('success', "Renewal request for $prescription->name sent");
+
+        return back();
     }
 
     /**
