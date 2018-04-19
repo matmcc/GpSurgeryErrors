@@ -270,7 +270,7 @@ class CalendarEventController extends Controller
         // Validation in type-hinted form request
         $this->saveCalendarEvent($request, $calendar_event);
 
-        return redirect()->route('calendar_events.index')->with('message', 'Item created successfully.');
+        return redirect()->route('calendar_events.index')->with('success', 'Item created successfully.');
     }
 
     /**
@@ -320,7 +320,7 @@ class CalendarEventController extends Controller
     {
         $calendar_event->delete();
 
-        return redirect()->route('calendar_events.index')->with('message', 'Item deleted successfully.');
+        return redirect()->route('calendar_events.index')->with('warning', 'Item deleted successfully.');
     }
 
 }
