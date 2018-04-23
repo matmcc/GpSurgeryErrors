@@ -10,14 +10,14 @@
                 <h4>Welcome to Over Surgery</h4>
             </div>
             <div class="card-body">
-                So, you're sick? Fear not, you've come to the right place - we can help you get over it.
+                So, you're sick? Fear not, you've come to the right place - we can help you get over it.<br>
                 We've got doctors, nurses, drugs and tests. You can book, you can contact us, we have drop-in surgery hours,
                 a telephone number, and a chatty receptionist - all the modern conveniences of a truly up-to-date
                 Dr's surgery. No trepanning, no homeopathy, no voodoo; just scientifically proven medical care,
                 all via our snazzy new website
                 <hr>
                 <h5>How do I use it?</h5>
-                Well, you have to login or register first. Then we can start to help you get better
+                Well, you have to <a href="{{ route('login') }}">login</a> or <a href="{{ route('register') }}">register</a> first. Then we can start to help you get better
             </div>
         </div>
         @endguest

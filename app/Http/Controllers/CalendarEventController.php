@@ -30,7 +30,11 @@ use Calendar;
  * Todo: DONE Admin: ... Filtered by admin?
  * Todo: DONE Admin: filter events by user
  * Todo: DONE Admin: helper to search user by email, name, etc?
+ * ...
  * Todo: Pagination
+ * Todo: Admin view for prescription and results
+ * Todo: Admin links from each function to other function easily - keep User in session?
+ * Todo: Breadcrumb previous users for admin?
  *
  * Todo: DONE add faker color to admins DONE - could pick nicer colours
  * Todo: DONE add colours to Calendar events DONE
@@ -53,9 +57,6 @@ use Calendar;
  * Todo: DONE Build front page, contacts page,
  * Todo: Chat?
  *
- * Todo: Admin view for prescription and results
- * Todo: Admin links from each function to other function easily - keep User in session?
- * Todo: Breadcrumb previous users for admin?
  *
  * Class CalendarEventController
  * @package App\Http\Controllers

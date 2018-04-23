@@ -10,4 +10,9 @@ class Prescription extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function medicine()
+    {
+        return $this->belongsTo('App\Medicine');
+    }
 }
