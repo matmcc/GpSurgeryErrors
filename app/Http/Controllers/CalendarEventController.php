@@ -16,6 +16,8 @@ use Calendar;
 
 /**
  * TODOS
+ * TODO: Should Prescription be one-to-many with user, one-to-many with drug? i.e. create a drug model?
+ *
  * Todo: Add validation to update
  * Todo: build forms for edit, view
  * Todo: add email notifications
@@ -35,19 +37,25 @@ use Calendar;
  * Todo: add name logic for title == null
  * Todo: ... then remove names from seeder
  *
- * Todo: add prescription model, v, c
- * Todo: add results model, v, c
+ * Todo: DONE add prescription model, v, c
+ * Todo: DONE add results model, v, c
  *
- * Todo: add Parsley JS validation to registration form and other inputs
+ * Todo: DONE FOR REG FORM add Parsley JS validation to registration form and other inputs
  *
  * Todo: add fullcalendar callbacks to update events if dragged
  * Todo: add fc callbacks for times
  * Todo: add fc draggable to create event ?
  *
  * Todo: test bootstrap for resizeable design
+ * Todo: Check ARIA tags
+ * Todo: Check flash messaging across all pages
  *
- * Todo: Build front page, contacts page,
+ * Todo: DONE Build front page, contacts page,
  * Todo: Chat?
+ *
+ * Todo: Admin view for prescription and results
+ * Todo: Admin links from each function to other function easily - keep User in session?
+ * Todo: Breadcrumb previous users for admin?
  *
  * Class CalendarEventController
  * @package App\Http\Controllers
