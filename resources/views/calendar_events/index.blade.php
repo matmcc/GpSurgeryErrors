@@ -76,7 +76,8 @@
                                           onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+                                        <button class="d-none d-sm-block btn btn-outline-danger btn-sm" type="submit">Delete</button>
+                                        <button class="d-block d-sm-none btn btn-outline-danger btn-sm" type="submit"><i class="fa fa-trash" style="color: darkred"></i></button>
                                     </form>
                                 </div>
                             </td>
@@ -100,11 +101,6 @@
 
                 <thead>
                     <tr>
-                        {{--<th>Title</th>--}}
-                        {{--<th>Start</th>--}}
-                        {{--<th>End</th>--}}
-                        {{--<th>Staff</th>--}}
-                        {{--<th>Colour</th>--}}
                         <th>Appointment</th>
                         <th>Staff</th>
                         <th class="text-right">Options</th>
@@ -116,11 +112,6 @@
 
                     @if($calendar_event->user_id == Auth::user()->id)
                     <tr>
-                        {{--<td>{{$calendar_event->title}}</td>--}}
-                        {{--<td>{{$calendar_event->start->format('jS \\of F \\a\\t H:i')}}</td>--}}
-                        {{--<td>{{$calendar_event->end}}</td>--}}
-                        {{--<td>{{$calendar_event->admin_id}}</td>--}}
-                        {{--<td>{{$calendar_event->background_color}}</td>--}}
                         <td>{{$calendar_event->start->format('jS \\of F \\a\\t H:i')}}</td>
                         <td>{{$admins[$calendar_event->admin_id]}}</td>
 
@@ -133,7 +124,8 @@
                                       onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+                                    <button class="d-none d-sm-block btn btn-outline-danger btn-sm" type="submit">Delete</button>
+                                    <button class="d-block d-sm-none btn btn-outline-danger btn-sm" type="submit"><i class="fa fa-trash" style="color: darkred"></i></button>
                                 </form>
                             </div>
                         </td>
