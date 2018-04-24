@@ -3,7 +3,7 @@
 
 @section('style')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha18/css/tempusdominus-bootstrap-4.min.css" />
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
+    {{--<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />--}}
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css" />
 @stop
 
@@ -72,10 +72,10 @@
 
                 <div class="row justify-content-end" style="padding-top: 20px">
 
-                        <div class="col-1">
-                            <a class="btn btn-outline-warning" href="{{ route('calendar_events.index') }}">Back</a>
+                        <div class="col-4 col-sm-3 col-md-2">
+                            <a class="btn btn-outline-warning btn-block" href="{{ route('calendar_events.index') }}">Back</a>
                         </div>
-                        <div class="col-3">
+                        <div class="col-8 col-sm-6 col-md-3">
                             <input class="btn btn-success btn-block" type="submit" value="Create"/>
                         </div>
 

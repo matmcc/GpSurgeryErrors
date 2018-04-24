@@ -16,14 +16,26 @@ use Calendar;
 
 /**
  * TODOS
- * TODO: Should Prescription be one-to-many with user, one-to-many with drug? i.e. create a drug model?
+ * TODO: DONE Should Prescription be one-to-many with user, one-to-many with drug? i.e. create a drug model?
+ * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
  *
- * Todo: Add validation to update
+ * TODO: Validate patient has appt at same time?
+ *
+ * TODO: Admin needs to book for patient
+ * Todo: Fix availability calendar in user view
  * Todo: build forms for edit, view
+ * Note: show, edit, allow for additional features to be built, e.g. email re: event
+ *
+ * TODO: flash message for choose bookable
+ * TODO: flash message for prescription renewal CHECK
+ * Todo: Add validation to update
+ *
+ * TODO: Edit for results does nothing
+ *
  * Todo: add email notifications
  *
- * Todo: Fix availability calendar in user view
- * Note: show, edit, allow for additional features to be built, e.g. email re: event
+ * TODO: Do we need days off for admins ?
+ * TODO: Info page for drugs available and days off ?
  *
  * Todo: Admin view - what is needed?
  * Todo: DONE Admin: table of todays events?
@@ -36,27 +48,25 @@ use Calendar;
  * Todo: Admin links from each function to other function easily - keep User in session?
  * Todo: Breadcrumb previous users for admin?
  *
- * Todo: DONE add faker color to admins DONE - could pick nicer colours
- * Todo: DONE add colours to Calendar events DONE
+ * Todo: DONE FOR REG FORM add Parsley JS validation to registration form and other inputs
+ * Todo: test bootstrap for resizeable design
+ * Todo: Check ARIA tags
+ * Todo: Check flash messaging across all pages
+ *
  * Todo: add name logic for title == null
  * Todo: ... then remove names from seeder
+ * Todo: DONE add faker color to admins DONE - could pick nicer colours
+ * Todo: DONE add colours to Calendar events DONE
  *
  * Todo: DONE add prescription model, v, c
  * Todo: DONE add results model, v, c
- *
- * Todo: DONE FOR REG FORM add Parsley JS validation to registration form and other inputs
  *
  * Todo: add fullcalendar callbacks to update events if dragged
  * Todo: add fc callbacks for times
  * Todo: add fc draggable to create event ?
  *
- * Todo: test bootstrap for resizeable design
- * Todo: Check ARIA tags
- * Todo: Check flash messaging across all pages
- *
  * Todo: DONE Build front page, contacts page,
  * Todo: Chat?
- *
  *
  * Class CalendarEventController
  * @package App\Http\Controllers
@@ -123,6 +133,7 @@ class CalendarEventController extends Controller
         $calendarOptions = [
             'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
             'defaultView' => 'agendaWeek',
+            'allDaySlot' => false,
             'weekends' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',
@@ -148,6 +159,7 @@ class CalendarEventController extends Controller
         $calendarOptions = [
             'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
             'defaultView' => 'agendaWeek',
+            'allDaySlot' => false,
             'weekends' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',
@@ -180,6 +192,7 @@ class CalendarEventController extends Controller
         $calendarOptions = [
             'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
             'defaultView' => 'agendaWeek',
+            'allDaySlot' => false,
             'weekends' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',
@@ -216,8 +229,9 @@ class CalendarEventController extends Controller
     {
 
         $calendarOptions = [
-            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
+            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'agendaWeek,agendaDay'],
             'defaultView' => 'agendaDay',
+            'allDaySlot' => false,
             'weekends' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',

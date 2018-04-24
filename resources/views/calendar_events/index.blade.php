@@ -154,7 +154,7 @@
                             @include('layouts.selectBookable',
                             ['name' => 'selectAdmin',
                             'id' => 'selectAdmin_id',
-                            'button' => '<button class="btn btn-success" type="submit">Book Appointment</button>'])
+                            'button' => 'Book Appointment'])
                         </div>
                     </div>
                     <div class="col-md-2">
