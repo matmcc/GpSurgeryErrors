@@ -40,7 +40,7 @@
                                 ['name' => 'selectAdmin',
                                 'id' => 'selectAdmin_id',
                                 'prepend' => 'Events by admin:',
-                                'button' => '<button class="btn btn-outline-success" type="submit">Search</button>'])
+                                'button' => 'Search'])
                             </div>
                         </div>
                         <div class="col-md-2">
