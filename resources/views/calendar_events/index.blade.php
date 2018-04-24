@@ -182,22 +182,17 @@
     {!! $calendar->script() !!}
 
     <script>
-        // $(".dropdown-toggle").dropdown();
-
-        // var $tableRows;
-        // $("#searchName").bind('submit', function (e) {
-        //     console.log($("#searchNameField").val());
-        //     $.getJSON('calendar_events/events/byname/' + $("#searchNameField").val(), function(data) {
-        //         $.each(data, function(i, e) {
-        //             $tableRows += "<tr>";
-        //             $tableRows += "<td>";
-        //
-        //             $tableRows += "</td>";
-        //             $tableRows += "</tr>";
-        //         })
-        //     });
-        //     e.preventDefault();
-        //     return false;
-        // });
+        $(function () {
+            var admin = JsVar.admin;
+            // remove month view if not admin
+            if (!admin) {
+                console.log('set options', admin);
+                $('.fc').fullCalendar('option', 'header', {'left': 'prev,next today', 'center': 'title', 'right': 'agendaWeek,agendaDay'});
+            }
+            // remove today button if screen width < 600px
+            if ($(window).width() < 600) {
+                $('.fc').fullCalendar('option', 'header', {'left': 'prev,next', 'center': 'title', 'right': 'agendaWeek,agendaDay'});
+            }
+        })
     </script>
 @endsection

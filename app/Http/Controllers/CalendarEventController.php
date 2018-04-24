@@ -206,6 +206,8 @@ class CalendarEventController extends Controller
 
         $admins = Admin::all()->pluck('name', 'id');
 
+        \JavaScript::put(['admin' => Auth::guard('admin')->check()]);
+
         return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
     }
 

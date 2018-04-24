@@ -822,9 +822,23 @@ NOTE: use percentage font sizes or else old IE chokes
     margin-left: 0; }
 
 /* title text */
-.fc-toolbar h2 {
-    font-size: 1.5em;
-    margin: 0; }
+@media (max-width: 600px) {
+    .fc-toolbar h2 {
+        font-size: 0.85em;
+        margin: 0; }
+}
+@media (min-width: 601px) and (max-width: 850px) {
+    .fc-toolbar h2 {
+        font-size: 1em;
+        margin: 0;
+    }
+}
+@media (min-width: 851px) {
+    .fc-toolbar h2 {
+        font-size: 1.5em;
+        margin: 0;
+    }
+}
 
 /* button layering (for border precedence) */
 .fc-toolbar button {
