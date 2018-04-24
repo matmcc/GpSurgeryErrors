@@ -79,6 +79,41 @@ class CalendarEvent extends Model implements IdentifiableEvent
 
     // END IdentifiableEvent implementation
     // -----------------------------------------------------------------------------------------
+    // DB relationships
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo('App\Admin');
+    }
+
+    public function eventBelongsToUser()
+    {
+        return Auth::id() == $this->user()->first()->id;
+    }
+
+    public function eventBelongsToAdmin()
+    {
+        return Auth::id() == $this->admin()->first()->id;
+    }
+
+    public function scopeBetween($query, Carbon $start, Carbon $end)
+    {
+        return $query->where('start', '<=', $end)->where('end', '>', $start);
+    }
+
+    public function scopeClash($query, CalendarEvent $event)
+    {
+        return $query->where('start', '<=', $event->end)->where('end', '>', $event->start);
+    }
+
+    // END DB Relationships
+    // -----------------------------------------------------------------------------------------
+
 
     /**
      * Optional FullCalendar.io settings for this event
@@ -144,12 +179,12 @@ class CalendarEvent extends Model implements IdentifiableEvent
 
     public function getUserNameAttribute()
     {
-        return $this->user()->name;
+        return $this->user()->first()->name;
     }
 
     public function getAdminNameAttribute()
     {
-        return $this->admin()->name;
+        return $this->admin()->first()->name;
     }
 
     public function getColorAttribute()
@@ -183,37 +218,5 @@ class CalendarEvent extends Model implements IdentifiableEvent
     }
 
     // -----------------------------------------------------------------------------------------
-
-    // DB relationships
-
-    public function user()
-    {
-        return $this->belongsTo('App\User');
-    }
-
-    public function admin()
-    {
-        return $this->belongsTo('App\Admin');
-    }
-
-    public function eventBelongsToUser()
-    {
-        return Auth::id() == $this->user()->first()->id;
-    }
-
-    public function eventBelongsToAdmin()
-    {
-        return Auth::id() == $this->admin()->first()->id;
-    }
-
-    public function scopeBetween($query, Carbon $start, Carbon $end)
-    {
-        return $query->where('start', '<=', $end)->where('end', '>', $start);
-    }
-
-    public function scopeClash($query, CalendarEvent $event)
-    {
-        return $query->where('start', '<=', $event->end)->where('end', '>', $event->start);
-    }
 
 }

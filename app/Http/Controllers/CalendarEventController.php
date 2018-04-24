@@ -256,7 +256,7 @@ class CalendarEventController extends Controller
             $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
         }
         //dd($disabledTimeRanges);
-        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges], 'admin' => $admin_id]);
+        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges], 'admin_id' => $admin_id]);
         //dd($disabledTimeRanges);
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);

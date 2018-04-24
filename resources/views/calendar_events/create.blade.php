@@ -123,7 +123,7 @@
             var date = datePicker.datetimepicker('viewDate').startOf('day');
             console.log('Date: ', date.toString());
             var time = '00:00';
-            var admin_id = JsVar.admin;
+            var admin_id = JsVar.admin_id;
             var disabledTimes = [];
 
             var calendar = $('.fc').fullCalendar('getCalendar');
@@ -147,7 +147,7 @@
             function getDisabledTimesByAjax(date) {
                 var dTimes = [];
                 $.when(
-                    $.getJSON('events/' + admin_id, function (data) {
+                    $.getJSON('events/admin/' + admin_id, function (data) {
                             $.each(data, function (i, event) {
                                 var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
                                 if($start.isSame(date, 'day')) {
@@ -239,6 +239,10 @@
                 getDisabledTimesByAjax(date);
                 console.log("Admin changed: ", admin_id);
             });
+
+            $('#timePicker_postText').on('click', function () {
+                $('#timePicker').timepicker('show');
+            })
 
         });
 
