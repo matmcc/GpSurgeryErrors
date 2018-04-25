@@ -21,7 +21,7 @@ use Calendar;
  *
  * TODO: Validate patient has appt at same time?
  *
- * TODO: Admin needs to book for patient
+ * TODO: DONE Admin needs to book for patient
  * Todo: Fix availability calendar in user view
  * Todo: DONE build forms for edit, view
  * Note: show, edit, allow for additional features to be built, e.g. email re: event
@@ -44,7 +44,7 @@ use Calendar;
  * Todo: DONE Admin: helper to search user by email, name, etc?
  * ...
  * Todo: DONE Pagination
- * Todo: Admin view for prescription and results
+ * Todo: DONE Admin view for prescription and results
  * Todo: Admin links from each function to other function easily - keep User in session?
  * Todo: Breadcrumb previous users for admin?
  *
