@@ -31,7 +31,7 @@
                     </div>
                 </form>
 
-                <form action="{{ route('calendar_events.events.admin') }}" method="POST">
+                <form action="{{ route('calendar_events.events.admin') }}" method="GET">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row">
                         <div class="col-md-12">

@@ -140,6 +140,7 @@ class CalendarEventController extends Controller
 
     public function eventsByUserName(Request $request)
     {
+
         $name = $request->input('searchNameValue');
         $uCname = ucwords($name);
         $firstname = preg_split('/\s+/', $uCname)[0];
@@ -167,10 +168,11 @@ class CalendarEventController extends Controller
 
     public function eventsByAdminPost(Request $request)
     {
+        //dd($request);
         $admin = Admin::find($request->input('selectAdmin'));
 
-        $calendar_events = $calendar_events_sorted = $admin->events()->get()->sortby('start');
-        //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
+        $calendar_events = $results = $admin->events()->get()->sortby('start');
+        $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.admin', ['selectAdmin' => $admin->id])]);
 
         $calendar = $this->prepCalendar($calendar_events);
 
