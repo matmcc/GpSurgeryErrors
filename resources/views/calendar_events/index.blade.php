@@ -87,6 +87,10 @@
 
                 </table>
 
+                @if($calendar_events_sorted instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                    {{ $calendar_events_sorted->links() }}
+                @endif
+
                 <!-- End Admin section -->
             @elseif(Auth::guard('web')->check())
                 <!-- User section -->

@@ -23,7 +23,7 @@ use Calendar;
  *
  * TODO: Admin needs to book for patient
  * Todo: Fix availability calendar in user view
- * Todo: build forms for edit, view
+ * Todo: DONE build forms for edit, view
  * Note: show, edit, allow for additional features to be built, e.g. email re: event
  *
  * TODO: flash message for choose bookable
@@ -128,9 +128,14 @@ class CalendarEventController extends Controller
      */
     public function paginate($items, $perPage = 15, $page = null, $options = [])
     {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $page = $page ?: Paginator::resolveCurrentPage();
         $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        return new LengthAwarePaginator(
+            $items->forPage($page, $perPage),
+            $items->count(),
+            $perPage,
+            $page,
+            array_key_exists('path', $options) ? $options : array_merge($options, [ 'path' => LengthAwarePaginator::resolveCurrentPath()]));
     }
 
     public function eventsByUserName(Request $request)
@@ -150,8 +155,8 @@ class CalendarEventController extends Controller
             $results = $results->merge($user->events()->get()->sortBy('start'));
         }
 
-        $calendar_events = $calendar_events_sorted = $results;
-        //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
+        //$calendar_events = $calendar_events_sorted = $results;
+        $calendar_events = $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.userName', ['searchNameValue' => $name])]);
 
         $calendar = $this->prepCalendar($calendar_events);
 

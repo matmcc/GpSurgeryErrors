@@ -25,9 +25,10 @@
                 <input type="hidden" name="selectAdmin" value="{{ $admin_id }}">
 
                 <div class="form-group">
-                    <label for="start_time"></label>
+                    <label for="initial_time"></label>
                     <p class="form-control-static">Current Appointment time & date:  {{$calendar_event->start->format('H:i \\o\\n \\t\\h\\e jS \\of F')}}</p>
                 </div>
+
                 <div class="form-group">
                     <div class="input-group date" id="datepicker-start" data-target-input="nearest">
                         <div class="input-group-prepend">
