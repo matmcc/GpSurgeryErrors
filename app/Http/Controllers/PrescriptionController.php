@@ -25,6 +25,18 @@ class PrescriptionController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function user(User $user)
+    {
+        $prescriptions = $user->prescriptions()->get();
+        return view('prescriptions.prescriptions', compact('prescriptions'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -51,7 +63,7 @@ class PrescriptionController extends Controller
      * @param  \App\Prescription  $prescription
      * @return \Illuminate\Http\Response
      */
-    public function show(Prescription $prescription)
+    public function show(Prescription  $prescription)
     {
         //
     }

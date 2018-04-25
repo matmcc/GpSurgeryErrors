@@ -77,11 +77,11 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="hidden" name="selectAdmin" value="{{ $event->admin()->first()->id }}">
                                         <input type="hidden" name="user_id" value="{{  $event->user()->first()->id }}">
-                                        <button class="d-none d-sm-block btn btn-success btn-sm" type="submit">Book</button>
+                                        <button class="d-none d-sm-block btn btn-outline-success btn-sm" type="submit">Book</button>
                                         <button class="d-block d-sm-none btn btn-outline-danger btn-sm" type="submit"><i class="fa fa-plus"></i></button>
                                     </form>
-                                    <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>
-                                    <a class="btn btn-outline-warning btn-sm" href="{{ route('calendar_events.edit', $event->id) }}">Edit</a>
+                                    <a class="btn btn-secondary btn-sm" href="{{ route('prescriptions.user', $event->user()->first()) }}">Pres.</a>
+                                    <a class="btn btn-dark btn-sm" href="{{ route('results.user', $event->user()->first()) }}">Res.</a>
                                 </div>
                                 <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
                                     <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>

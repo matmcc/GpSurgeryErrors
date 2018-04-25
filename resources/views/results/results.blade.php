@@ -2,7 +2,13 @@
 
 @section('content')
     <div class="page-header">
-        <h3>Results</h3>
+        <h3>
+        @if(@auth('admin') && count($results))
+            Results for {{ $results->first()->user()->first()->name }}
+        @else
+            Results
+        @endif
+        </h3>
     </div>
     <hr>
 

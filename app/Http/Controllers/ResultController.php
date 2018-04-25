@@ -31,7 +31,19 @@ class ResultController extends Controller
      */
     public function show(Result $result)
     {
-        return view('results.result',compact('result'));
+        return view('results.result', compact('result'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Result  $result
+     * @return \Illuminate\Http\Response
+     */
+    public function user(User $user)
+    {
+        $results = $user->results()->get();
+        return view('results.results', compact('results'));
     }
 
     /**

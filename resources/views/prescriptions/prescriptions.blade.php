@@ -13,7 +13,11 @@
 
     <div class="card">
         <div class="card-header" id="presHeader">
+            @if(@auth('admin'))
+            Prescriptions for {{ $prescriptions->first()->user()->first()->name }}
+            @else
             Your Prescriptions
+            @endif
         </div>
         <div class="card-body">
         @if(count($prescriptions) == 0)
