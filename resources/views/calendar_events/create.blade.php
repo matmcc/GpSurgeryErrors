@@ -72,7 +72,7 @@
                 <div class="row justify-content-end" style="padding-top: 20px">
 
                         <div class="col-4 col-sm-3 col-md-2">
-                            <a class="btn btn-outline-warning btn-block" href="{{ route('calendar_events.index') }}">Back</a>
+                            <a class="btn btn-outline-info btn-block" href="{{ route('calendar_events.index') }}">Back</a>
                         </div>
                         <div class="col-8 col-sm-6 col-md-3">
                             <input class="btn btn-success btn-block" type="submit" value="Create"/>

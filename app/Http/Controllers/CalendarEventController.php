@@ -94,6 +94,30 @@ class CalendarEventController extends Controller
     }
 
     /**
+     * @param $calendar_events
+     * @return \Calendar
+     */
+    public function prepCalendar($calendar_events)
+    {
+        $calendarOptions = [
+            'header' => ['left' => 'prev,next today', 'center' => 'title',
+                'right' => Auth::guard('admin')->check() ? 'month,agendaWeek,agendaDay' : 'agendaWeek,agendaDay' ],
+            'defaultView' => 'agendaWeek',
+            'allDaySlot' => false,
+            'weekends' => false,
+            'slotDuration' => '00:30:00',
+            'minTime' => '08:00:00',
+            'maxTime' => '18:00:00',
+            'weekNumbers' => true,
+            'navLinks' => true,
+            'locale' => 'en-gb'
+        ];
+
+        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+        return $calendar;
+    }
+
+    /**
      *
      * @param array|Collection      $items
      * @param int   $perPage
@@ -125,30 +149,17 @@ class CalendarEventController extends Controller
         foreach ($users as $user) {
             $results = $results->merge($user->events()->get()->sortBy('start'));
         }
-//        dd($results); // toJson() is breaking - worked in web.php
-//        return $results;
+
         $calendar_events = $calendar_events_sorted = $results;
         //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
 
-        $calendarOptions = [
-            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
-            'defaultView' => 'agendaWeek',
-            'allDaySlot' => false,
-            'weekends' => false,
-            'slotDuration' => '00:30:00',
-            'minTime' => '08:00:00',
-            'maxTime' => '18:00:00',
-            'weekNumbers' => true,
-            'navLinks' => true,
-            'locale' => 'en-gb'
-        ];
-
-        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+        $calendar = $this->prepCalendar($calendar_events);
 
         $admins = Admin::all()->pluck('name', 'id');
 
         return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
     }
+
     public function eventsByAdminPost(Request $request)
     {
         $admin = Admin::find($request->input('selectAdmin'));
@@ -156,20 +167,7 @@ class CalendarEventController extends Controller
         $calendar_events = $calendar_events_sorted = $admin->events()->get()->sortby('start');
         //$calendar_events = $calendar_events_sorted = $this->paginate($results, 5);
 
-        $calendarOptions = [
-            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
-            'defaultView' => 'agendaWeek',
-            'allDaySlot' => false,
-            'weekends' => false,
-            'slotDuration' => '00:30:00',
-            'minTime' => '08:00:00',
-            'maxTime' => '18:00:00',
-            'weekNumbers' => true,
-            'navLinks' => true,
-            'locale' => 'en-gb'
-        ];
-
-        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+        $calendar = $this->prepCalendar($calendar_events);
 
         $admins = Admin::all()->pluck('name', 'id');
 
@@ -189,20 +187,8 @@ class CalendarEventController extends Controller
             ->get()->sortby('start');
 
         // TODO: Build Calendar class for options and docs
-        $calendarOptions = [
-            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'month,agendaWeek,agendaDay'],
-            'defaultView' => 'agendaWeek',
-            'allDaySlot' => false,
-            'weekends' => false,
-            'slotDuration' => '00:30:00',
-            'minTime' => '08:00:00',
-            'maxTime' => '18:00:00',
-            'weekNumbers' => true,
-            'navLinks' => true,
-            'locale' => 'en-gb'
-        ];
 
-        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+        $calendar = $this->prepCalendar($calendar_events);
 
         $admins = Admin::all()->pluck('name', 'id');
 
@@ -229,39 +215,25 @@ class CalendarEventController extends Controller
      */
     public function createByAdmin(Request $request)
     {
-
-        $calendarOptions = [
-            'header' => ['left' => 'prev,next today', 'center' => 'title', 'right' => 'agendaWeek,agendaDay'],
-            'defaultView' => 'agendaDay',
-            'allDaySlot' => false,
-            'weekends' => false,
-            'slotDuration' => '00:30:00',
-            'minTime' => '08:00:00',
-            'maxTime' => '18:00:00',
-            'weekNumbers' => true,
-            'navLinks' => true,
-            'locale' => 'en-gb'
-        ];
-
         $admin_id = $request->input('selectAdmin');
         $admins = Admin::all()->pluck('name', 'id');
-        $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get();
+        $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get()->sortby('start');
         //$calendar_events = route("calendar_events.events.admin", $admin_id);
 
         // TODO: Currently provides range of times for all days - needs to be per day
-        $disabledTimeRanges = [];
-        foreach ($calendar_events as $k => $event) {
-            $start = $event->start->toTimeString();
-            $end = $event->end->toTimeString();
-            $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
-        }
+//        $disabledTimeRanges = [];
+//        foreach ($calendar_events as $k => $event) {
+//            $start = $event->start->toTimeString();
+//            $end = $event->end->toTimeString();
+//            $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
+//        }
         //dd($disabledTimeRanges);
-        \JavaScript::put(['disabledTimes' => [$disabledTimeRanges], 'admin_id' => $admin_id]);
+        \JavaScript::put(['admin_id' => $admin_id]);
         //dd($disabledTimeRanges);
 
-        $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
+        $calendar = $this->prepCalendar($calendar_events);
 
-        return view('calendar_events.create', compact('calendar', 'disabledTimeRanges', 'admin_id', 'admins'));
+        return view('calendar_events.create', compact('calendar', 'admin_id', 'admins'));
     }
 
     /**
@@ -317,7 +289,15 @@ class CalendarEventController extends Controller
      */
     public function edit(CalendarEvent $calendar_event)
     {
-        return view('calendar_events.edit', compact('calendar_event'));
+        $admin = $calendar_event->admin()->first();
+        $admins = Admin::all()->pluck('name', 'id');
+        $admin_id = $admin->id;
+        $calendar_events = $admin->events()->get()->sortby('start');
+        $calendar = $this->prepCalendar($calendar_events);
+
+        \JavaScript::put(['event' => $calendar_event]);
+        //dd($admin, $calendar_events);
+        return view('calendar_events.edit', compact('calendar', 'calendar_event', 'admins', 'admin_id'));
     }
 
     /**
@@ -347,5 +327,6 @@ class CalendarEventController extends Controller
 
         return redirect()->route('calendar_events.index')->with('warning', 'Item deleted successfully.');
     }
+
 
 }
