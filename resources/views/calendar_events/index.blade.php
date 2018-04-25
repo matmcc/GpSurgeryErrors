@@ -24,6 +24,7 @@
                                    id="searchNameField"
                                    type="text"
                                    placeholder="Search by name or email"
+                                   required
                                    aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -68,6 +69,20 @@
                             <td>{{$event->user()->first()->name}}</td>
 
                             <td class="text-right">
+                                <div class="btn-group" role="group" aria-label="User option buttons">
+                                    <form action="{{ route('calendar_events.create.admin',
+                                                    ['admin_id' => $event->admin()->first()->id,
+                                                    'user_id' => $event->user()->first()->id]) }}"
+                                          method="POST">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="selectAdmin" value="{{ $event->admin()->first()->id }}">
+                                        <input type="hidden" name="user_id" value="{{  $event->user()->first()->id }}">
+                                        <button class="d-none d-sm-block btn btn-success btn-sm" type="submit">Book</button>
+                                        <button class="d-block d-sm-none btn btn-outline-danger btn-sm" type="submit"><i class="fa fa-plus"></i></button>
+                                    </form>
+                                    <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>
+                                    <a class="btn btn-outline-warning btn-sm" href="{{ route('calendar_events.edit', $event->id) }}">Edit</a>
+                                </div>
                                 <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
                                     <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>
                                     <a class="btn btn-outline-warning btn-sm" href="{{ route('calendar_events.edit', $event->id) }}">Edit</a>

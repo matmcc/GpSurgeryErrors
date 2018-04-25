@@ -23,6 +23,9 @@
             <form action="{{ route('calendar_events.store') }}" method="POST">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="selectAdmin" value="{{ $admin_id }}">
+                @if(Auth::guard('admin')->check())
+                    <input type="hidden" name="user_id" value="{{ $user_id }}">
+                @endif
 
                 <div class="form-group">
                     <div class="input-group date" id="datepicker-start" data-target-input="nearest">

@@ -43,7 +43,7 @@ use Calendar;
  * Todo: DONE Admin: filter events by user
  * Todo: DONE Admin: helper to search user by email, name, etc?
  * ...
- * Todo: Pagination
+ * Todo: DONE Pagination
  * Todo: Admin view for prescription and results
  * Todo: Admin links from each function to other function easily - keep User in session?
  * Todo: Breadcrumb previous users for admin?
@@ -225,6 +225,8 @@ class CalendarEventController extends Controller
         $admin_id = $request->input('selectAdmin');
         $admins = Admin::all()->pluck('name', 'id');
         $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get()->sortby('start');
+        $user_id = $request->filled('user_id') ? $request->input('user_id') : null;
+        //dd($request, $admin_id, $admins, $calendar_events, $user_id);
         //$calendar_events = route("calendar_events.events.admin", $admin_id);
 
         // TODO: Currently provides range of times for all days - needs to be per day
@@ -240,7 +242,7 @@ class CalendarEventController extends Controller
 
         $calendar = $this->prepCalendar($calendar_events);
 
-        return view('calendar_events.create', compact('calendar', 'admin_id', 'admins'));
+        return view('calendar_events.create', compact('calendar', 'admin_id', 'admins', 'user_id'));
     }
 
     /**

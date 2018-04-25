@@ -12,6 +12,12 @@
             <form action="#">
 
                 <hr>
+                @if(Auth::guard('admin')->check())
+                    <div class="form-group">
+                         <label for="title"></label>
+                         <p class="form-control-static">Appointment for: {{ $calendar_event->user()->first()->name }}</p>
+                    </div>
+                @endif
                 <div class="form-group">
                      <label for="title"></label>
                      <p class="form-control-static">Appointment with: {{ ucfirst($calendar_event->admin()->first()->job_title) .' '. $calendar_event->admin()->first()->name }}</p>

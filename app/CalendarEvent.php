@@ -137,6 +137,7 @@ class CalendarEvent extends Model implements IdentifiableEvent
                     'startEditable' => true,
                     'durationEditable' => true,
                     'url' => route('calendar_events.show', $this->id),
+                    'rendering' => ''
                 ];
             }
             else {
