@@ -237,8 +237,10 @@
             });
 
             calendar.on('viewRender', function(view, element){
-                calendar.removeEvents();
-                calendar.addEventSource('calendar_events/events/admin/' + admin);
+                if( $('#selectAdmin_id').val()) {
+                    calendar.removeEvents();
+                    calendar.addEventSource('calendar_events/events/admin/' + admin);
+                }
             });
 
         })
