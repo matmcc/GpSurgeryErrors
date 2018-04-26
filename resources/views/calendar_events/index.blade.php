@@ -180,30 +180,36 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <hr>
-                <div class="panel-heading" style="padding-top: 20px; padding-bottom: 10px">
-                    <h4>Availability:</h4>
-                </div>
-
-                <div class="panel-body">
-                    {!! $calendar->calendar() !!}
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header" id="calHeader">
+            Calendar
+        </div>
+        <div class="card-body">
+            @if(! empty($calendar))
+                {!! $calendar->calendar() !!}
+            @endif
         </div>
     </div>
-
 
 @endsection
 
 @section('script')
     {!! $calendar->script() !!}
+    <!-- jQuery AJAX setup -->
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
 
     <script>
         $(function () {
             var admin = JsVar.admin;
+            var calendar = $('.fc').fullCalendar('getCalendar');
+
+            // FullCalendar updates...
             // remove month view if not admin
             if (!admin) {
                 console.log('set options', admin);
@@ -213,6 +219,28 @@
             if ($(window).width() < 600) {
                 $('.fc').fullCalendar('option', 'header', {'left': 'prev,next', 'center': 'title', 'right': 'agendaWeek,agendaDay'});
             }
+
+            $( document ).ajaxStart(function() {
+                $( "#calHeader" ).addClass('bg-info').addClass('text-center');
+                $( "#calHeader" ).text('Loading Calendar Events');
+            });
+            $( document ).ajaxComplete(function() {
+                $( "#calHeader" ).removeClass('bg-info').removeClass('text-center');
+                $( "#calHeader" ).text('Calendar');
+            });
+
+            $('#selectAdmin_id').on('change', function() {
+                admin = $(this).val();
+                calendar.removeEvents();
+                calendar.addEventSource('calendar_events/events/admin/' + admin);
+                //console.log("Admin changed: ", admin);
+            });
+
+            calendar.on('viewRender', function(view, element){
+                calendar.removeEvents();
+                calendar.addEventSource('calendar_events/events/admin/' + admin);
+            });
+
         })
     </script>
 @endsection

@@ -152,7 +152,7 @@
                 var dTimes = [];
                 $.when(
                     $.getJSON('events/admin/' + admin_id, function (data) {
-                        //console.log(data);
+                        console.log(data);
                             $.each(data, function (i, event) {
                                 var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
                                 if($start.isSame(date, 'day')) {
@@ -240,7 +240,7 @@
             $('#selectAdmin_id').on('change', function() {
                 admin_id = $(this).val();
                 $('.fc').fullCalendar('removeEvents');
-                $('.fc').fullCalendar('addEventSource', 'events/' + admin_id);
+                $('.fc').fullCalendar('addEventSource', 'events/admin/' + admin_id);
                 getDisabledTimesByAjax(date);
                 console.log("Admin changed: ", admin_id);
             });

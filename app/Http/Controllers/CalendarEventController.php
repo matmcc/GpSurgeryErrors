@@ -273,12 +273,12 @@ class CalendarEventController extends Controller
 
     public function eventsByAdmin(Admin $admin_id)
     {
-        return $admin_id->events()->whereBetween('start', [Carbon::today(), Carbon::today()->addMonths(3)])->get();
+        return $admin_id->events()->whereBetween('start', [Carbon::today(), Carbon::today()->addMonths(2)])->get();
     }
 
     public function eventsByUser(User $user_id)
     {
-        return $user_id->events()->whereBetween('start', [Carbon::today(), Carbon::today()->addMonths(3)])->get();
+        return $user_id->events()->whereBetween('start', [Carbon::today(), Carbon::today()->addMonths(2)])->get();
     }
 
     //------------------------------------------------------------------------------------------------------------------
