@@ -26,24 +26,24 @@
 
 @if (session('success'))
     <div class="alert alert-success">
-        {{ session('message') }}
+        {{ session('success') }}
     </div>
 @endif
 
 @if (session('danger'))
     <div class="alert alert-danger">
-        {{ session('status') }}
+        {{ session('danger') }}
     </div>
 @endif
 
 @if (session('warning'))
     <div class="alert alert-warning">
-        {{ session('message') }}
+        {{ session('warning') }}
     </div>
 @endif
 
 @if (session('info'))
     <div class="alert alert-info">
-        {{ session('status') }}
+        {{ session('info') }}
     </div>
 @endif

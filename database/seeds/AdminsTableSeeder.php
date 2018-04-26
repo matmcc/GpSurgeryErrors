@@ -37,7 +37,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'dr',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Charles Bovary')
+            'color' => 'blue'
         ]);
         $drOne->save();
 
@@ -47,7 +47,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'dr',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Dick Diver')
+            'color' => 'cornflowerblue'
         ]);
         $drTwo->save();
 
@@ -57,7 +57,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'dr',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('John Watson')
+            'color' => 'darkslateblue'
         ]);
         $drThree->save();
 
@@ -67,7 +67,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'dr',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Henry Jeckyll')
+            'color' => 'deepskyblue'
         ]);
         $drFour->save();
 
@@ -77,7 +77,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'nurse',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Margaret Sanger')
+            'color' => 'darkslategrey'
         ]);
         $nurseOne->save();
 
@@ -87,7 +87,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'nurse',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Christine Beasley')
+            'color' => 'darkgreen'
         ]);
         $nurseTwo->save();
 
@@ -97,7 +97,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'nurse',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Janet Davies')
+            'color' => 'yellowgreen'
         ]);
         $nurseThree->save();
 
@@ -107,7 +107,7 @@ class AdminsTableSeeder extends Seeder
             'job_title' => 'nurse',
             'password' => \Hash::make('password'),
             'remember_token' => str_random(60),
-            'color' => $this->setColourRgb('Jackie Smith')
+            'color' => 'olive'
         ]);
         $nurseFour->save();
 

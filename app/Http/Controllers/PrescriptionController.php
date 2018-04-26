@@ -20,6 +20,7 @@ class PrescriptionController extends Controller
         $id = Auth::id();
         $user = User::find($id);
         $prescriptions = $user->prescriptions()->get();
+        //dd(compact($user, $prescriptions));
 
         return view('prescriptions.prescriptions', compact('prescriptions'));
     }

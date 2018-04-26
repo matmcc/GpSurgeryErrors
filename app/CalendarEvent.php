@@ -33,7 +33,23 @@ class CalendarEvent extends Model implements IdentifiableEvent
      */
     public function getTitle()
     {
-        return $this->title;
+        if ($this->title) {
+            $result =  $this->title;
+        } else {
+            $result = substr($this->admin()->first()->job_title, 0, 2);
+            $adminName = $this->admin()->first()->name;
+            $adminLastName = explode(' ', $adminName);
+            $adminLastName = end($adminLastName);
+            $result .= ' '.$adminLastName.' : ';
+            $userName = $this->user()->first()->name;
+            $userName = explode(' ', $userName);
+            $userInitial = substr(current($userName), 0, 1);
+            $userLastName = end($userName);
+            $result .= $userInitial .' '. $userLastName;
+            $time = $this->start->format('H:i');
+            $result .= ' - '.$time;
+        }
+        return $result;
     }
 
     /**
@@ -153,7 +169,8 @@ class CalendarEvent extends Model implements IdentifiableEvent
         }
         else if (Auth::check()) {
             return [
-                'color' => $this->eventBelongsToUser() ? $this->admin()->first()->color : '#ff9f89',
+                'color' => $this->eventBelongsToUser() ? 'orangered' : $this->admin()->first()->color,
+                //'color' => $this->admin()->first()->color,
                 'overlap' => false,
                 'startEditable' => $this->eventBelongsToUser(),
                 'durationEditable' => false,

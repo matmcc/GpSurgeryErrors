@@ -13,14 +13,14 @@
 
     <div class="card">
         <div class="card-header" id="presHeader">
-            @if(@auth('admin'))
+            @if(@auth('admin') && count($prescriptions))
             Prescriptions for {{ $prescriptions->first()->user()->first()->name }}
             @else
             Your Prescriptions
             @endif
         </div>
         <div class="card-body">
-        @if(count($prescriptions) == 0)
+        @if(count($prescriptions) == 0 ?? !isset($prescriptions))
             @component('layouts.empty')
                     <strong>You do not have any prescriptions.</strong>
                     <br>Although you can extend your prescriptions here after a Dr has initially prescribed them,

@@ -16,56 +16,43 @@ use Calendar;
 
 /**
  * TODOS
- * TODO: DONE Should Prescription be one-to-many with user, one-to-many with drug? i.e. create a drug model?
  * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
- *
- * TODO: Validate patient has appt at same time?
- *
- * TODO: DONE Admin needs to book for patient
- * Todo: Fix availability calendar in user view
- * Todo: DONE build forms for edit, view
- * Note: show, edit, allow for additional features to be built, e.g. email re: event
- *
- * TODO: flash message for choose bookable
- * TODO: flash message for prescription renewal CHECK
- * Todo: Add validation to update
- *
  * TODO: Edit for results does nothing
  *
+ * Todo: Fix availability calendar in user view
+ * TODO: ADD AJAX Call to Update calendar
+ *
+ * TODO: Validate patient has appt at same time?
+ * Todo: Add validation to update
+ * Todo: CHECK validation
+ * Todo: CHECK Parsley JS validation for other inputs
+ *
+ * Note: show, edit, allow for additional features to be built, e.g. email re: event
+ * Done-ish...
+ * TODO: flash message for choose bookable
+ * TODO: flash message for prescription renewal CHECK
+ * Todo: Check flash messaging across all pages
+ *
  * Todo: add email notifications
+ * TODO: Tooltips ?
  *
  * TODO: Do we need days off for admins ?
  * TODO: Info page for drugs available and days off ?
  *
- * Todo: Admin view - what is needed?
- * Todo: DONE Admin: table of todays events?
- * Todo: DONE Admin: ... Filtered by admin?
- * Todo: DONE Admin: filter events by user
- * Todo: DONE Admin: helper to search user by email, name, etc?
- * ...
- * Todo: DONE Pagination
- * Todo: DONE Admin view for prescription and results
  * Todo: Admin links from each function to other function easily - keep User in session?
+ * Todo: Admin Nav links are broken FIX or REMOVE?
  * Todo: Breadcrumb previous users for admin?
  *
- * Todo: DONE FOR REG FORM add Parsley JS validation to registration form and other inputs
- * Todo: test bootstrap for resizeable design
+ * Todo: DONE FOR USER test bootstrap for resizeable design
  * Todo: Check ARIA tags
- * Todo: Check flash messaging across all pages
  *
- * Todo: add name logic for title == null
+ * Todo: DONE add name logic for title == null
  * Todo: ... then remove names from seeder
- * Todo: DONE add faker color to admins DONE - could pick nicer colours
- * Todo: DONE add colours to Calendar events DONE
- *
- * Todo: DONE add prescription model, v, c
- * Todo: DONE add results model, v, c
  *
  * Todo: add fullcalendar callbacks to update events if dragged
  * Todo: add fc callbacks for times
  * Todo: add fc draggable to create event ?
  *
- * Todo: DONE Build front page, contacts page,
  * Todo: Chat?
  *
  * Class CalendarEventController
@@ -83,34 +70,29 @@ class CalendarEventController extends Controller
         $this->middleware('auth:web,admin');
     }
 
-    public function eventsByAdmin(Admin $admin_id)
-    {
-        return $admin_id->events()->get();
-    }
-
-    public function eventsByUser(User $user_id)
-    {
-        return $user_id->events()->get();
-    }
-
     /**
+     * Prepare Calendar fullCalendar object with events and options
+     *
      * @param $calendar_events
      * @return \Calendar
      */
     public function prepCalendar($calendar_events)
     {
+        // TODO: Build Calendar class for options and docs
         $calendarOptions = [
             'header' => ['left' => 'prev,next today', 'center' => 'title',
                 'right' => Auth::guard('admin')->check() ? 'month,agendaWeek,agendaDay' : 'agendaWeek,agendaDay' ],
             'defaultView' => 'agendaWeek',
             'allDaySlot' => false,
             'weekends' => false,
+            'displayEventEnd' => false,
             'slotDuration' => '00:30:00',
             'minTime' => '08:00:00',
             'maxTime' => '18:00:00',
             'weekNumbers' => true,
             'navLinks' => true,
-            'locale' => 'en-gb'
+            'locale' => 'en-gb',
+            'views' => ['agenda' => ['displayEventTime' => false]]
         ];
 
         $calendar = Calendar::addEvents($calendar_events)->setOptions($calendarOptions);
@@ -118,6 +100,7 @@ class CalendarEventController extends Controller
     }
 
     /**
+     * Paginate Collection
      *
      * @param array|Collection      $items
      * @param int   $perPage
@@ -138,48 +121,8 @@ class CalendarEventController extends Controller
             array_key_exists('path', $options) ? $options : array_merge($options, [ 'path' => LengthAwarePaginator::resolveCurrentPath()]));
     }
 
-    public function eventsByUserName(Request $request)
-    {
-
-        $name = $request->input('searchNameValue');
-        $uCname = ucwords($name);
-        $firstname = preg_split('/\s+/', $uCname)[0];
-
-        $results = collect();
-
-        $users = User::where('name', '=', "$uCname")
-        ->orWhere('name', 'like', "$firstname%")
-        ->orWhere('email', '=', mb_strtolower($name))
-        ->get();
-
-        foreach ($users as $user) {
-            $results = $results->merge($user->events()->get()->sortBy('start'));
-        }
-
-        //$calendar_events = $calendar_events_sorted = $results;
-        $calendar_events = $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.userName', ['searchNameValue' => $name])]);
-
-        $calendar = $this->prepCalendar($calendar_events);
-
-        $admins = Admin::all()->pluck('name', 'id');
-
-        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
-    }
-
-    public function eventsByAdminPost(Request $request)
-    {
-        //dd($request);
-        $admin = Admin::find($request->input('selectAdmin'));
-
-        $calendar_events = $results = $admin->events()->get()->sortby('start');
-        $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.admin', ['selectAdmin' => $admin->id])]);
-
-        $calendar = $this->prepCalendar($calendar_events);
-
-        $admins = Admin::all()->pluck('name', 'id');
-
-        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
-    }
+    //------------------------------------------------------------------------------------------------------------------
+    // Resource Controller section
 
     /**
      * Display a listing of the resource.
@@ -193,8 +136,6 @@ class CalendarEventController extends Controller
         $calendar_events_sorted = CalendarEvent::whereDate('start', '=', $today)
             ->get()->sortby('start');
 
-        // TODO: Build Calendar class for options and docs
-
         $calendar = $this->prepCalendar($calendar_events);
 
         $admins = Admin::all()->pluck('name', 'id');
@@ -202,6 +143,23 @@ class CalendarEventController extends Controller
         \JavaScript::put(['admin' => Auth::guard('admin')->check()]);
 
         return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
+    }
+
+    /**
+     * Utility method to save event
+     *
+     * @param Request $request
+     * @param CalendarEvent $calendar_event
+     */
+    public function saveCalendarEvent(Request $request, CalendarEvent $calendar_event): void
+    {
+        $calendar_event->title          = $request->input("title");
+        $calendar_event->start          = Carbon::parse($request->input("start"));
+        $calendar_event->end            = Carbon::parse($request->input("start"))->addMinutes(30);
+        $calendar_event->user_id        = Auth::user()->getAuthIdentifier();
+        $calendar_event->admin_id       = $request->input('selectAdmin');
+
+        $calendar_event->save();
     }
 
     /**
@@ -226,42 +184,14 @@ class CalendarEventController extends Controller
         $admins = Admin::all()->pluck('name', 'id');
         $calendar_events = CalendarEvent::where('admin_id', $admin_id)->get()->sortby('start');
         $user_id = $request->filled('user_id') ? $request->input('user_id') : null;
-        //dd($request, $admin_id, $admins, $calendar_events, $user_id);
-        //$calendar_events = route("calendar_events.events.admin", $admin_id);
 
-        // TODO: Currently provides range of times for all days - needs to be per day
-//        $disabledTimeRanges = [];
-//        foreach ($calendar_events as $k => $event) {
-//            $start = $event->start->toTimeString();
-//            $end = $event->end->toTimeString();
-//            $disabledTimeRanges[] = [$event->start->toDateString(), [substr("$start", 0, 5), substr("$end", 0, 5)]];
-//        }
-        //dd($disabledTimeRanges);
         \JavaScript::put(['admin_id' => $admin_id]);
-        //dd($disabledTimeRanges);
 
         $calendar = $this->prepCalendar($calendar_events);
 
         return view('calendar_events.create', compact('calendar', 'admin_id', 'admins', 'user_id'));
     }
 
-    /**
-     * @param Request $request
-     * @param CalendarEvent $calendar_event
-     */
-    public function saveCalendarEvent(Request $request, CalendarEvent $calendar_event): void
-    {
-        $calendar_event->title          = $request->input("title");
-        $calendar_event->start          = Carbon::parse($request->input("start"));
-        //$calendar_event->end          = Carbon::parse($request->input("end"));
-        $calendar_event->end            = Carbon::parse($request->input("start"))->addMinutes(30);
-        //$calendar_event->is_all_day       = $request->input("is_all_day");
-        //$calendar_event->background_color = $request->input("background_color");
-        $calendar_event->user_id        = Auth::user()->getAuthIdentifier();
-        $calendar_event->admin_id       = $request->input('selectAdmin');
-
-        $calendar_event->save();
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -271,7 +201,6 @@ class CalendarEventController extends Controller
      */
     public function store(Requests\StoreCalendarEvent $request)
     {
-        //dd($request);
         $calendar_event = new CalendarEvent();
         // Validation in type-hinted form request
         $this->saveCalendarEvent($request, $calendar_event);
@@ -305,7 +234,7 @@ class CalendarEventController extends Controller
         $calendar = $this->prepCalendar($calendar_events);
 
         \JavaScript::put(['event' => $calendar_event]);
-        //dd($admin, $calendar_events);
+
         return view('calendar_events.edit', compact('calendar', 'calendar_event', 'admins', 'admin_id'));
     }
 
@@ -337,5 +266,75 @@ class CalendarEventController extends Controller
         return redirect()->route('calendar_events.index')->with('warning', 'Item deleted successfully.');
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Return events for AJAX call
 
+    public function eventsByAdmin(Admin $admin_id)
+    {
+        return $admin_id->events()->get();
+    }
+
+    public function eventsByUser(User $user_id)
+    {
+        return $user_id->events()->get();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Paginated results - requires $this->>paginate() method above
+
+    /**
+     * Get paginated events for any User where name or email includes $request['name']
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function eventsByUserName(Request $request)
+    {
+        $name = $request->input('searchNameValue');
+        $uCname = ucwords($name);
+        $firstname = preg_split('/\s+/', $uCname)[0];
+
+        $results = collect();
+
+        $users = User::where('name', '=', "$uCname")
+        ->orWhere('name', 'like', "$firstname%")
+        ->orWhere('email', '=', mb_strtolower($name))
+        ->get();
+
+        foreach ($users as $user) {
+            $results = $results->merge($user->events()->get()->sortBy('start'));
+        }
+
+        $calendar_events = $calendar_events_sorted = $this->paginate(
+            $results, 10, null,
+            ['path' => route('calendar_events.events.userName', ['searchNameValue' => $name])]);
+
+        $calendar = $this->prepCalendar($calendar_events);
+
+        $admins = Admin::all()->pluck('name', 'id');
+
+        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
+    }
+
+    /**
+     * Get paginated results for Admin
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function eventsByAdminPost(Request $request)
+    {
+        $admin = Admin::find($request->input('selectAdmin'));
+
+        $calendar_events = $results = $admin->events()->get()->sortby('start');
+        $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.admin', ['selectAdmin' => $admin->id])]);
+
+        $calendar = $this->prepCalendar($calendar_events);
+
+        $admins = Admin::all()->pluck('name', 'id');
+
+        return view('calendar_events.index', compact('calendar_events', 'calendar_events_sorted', 'calendar', 'admins'));
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 }

@@ -17,7 +17,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="searchName_preText">Events by user:</span>
+                            <span class="input-group-text" id="searchName_preText">Search for user:</span>
                         </div>
                             <input class="form-control"
                                    name="searchNameValue"
@@ -81,7 +81,7 @@
                                         <button class="d-block d-sm-none btn btn-outline-danger btn-sm" type="submit"><i class="fa fa-plus"></i></button>
                                     </form>
                                     <a class="btn btn-secondary btn-sm" href="{{ route('prescriptions.user', $event->user()->first()) }}">Pres.</a>
-                                    <a class="btn btn-dark btn-sm" href="{{ route('results.user', $event->user()->first()) }}">Res.</a>
+                                    <a class="btn btn-dark btn-sm" href="{{ route('results.user', $event->user()->first()) }}">Resu.</a>
                                 </div>
                                 <div class="btn-group" role="group" aria-label="Calendar Event option buttons">
                                     <a class="btn btn-outline-info btn-sm" href="{{ route('calendar_events.show', $event->id) }}">View</a>
@@ -131,6 +131,7 @@
 
                     @if($calendar_event->user_id == Auth::user()->id)
                     <tr>
+                        {{--style="background-color: {{ $calendar_event->admin()->first()->color }}; filter: brightness(150%)"--}}
                         <td>{{$calendar_event->start->format('jS \\of F \\a\\t H:i')}}</td>
                         <td>{{$admins[$calendar_event->admin_id]}}</td>
 
