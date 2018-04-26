@@ -35,7 +35,6 @@ class CalendarEventTableSeeder extends Seeder {
 
             // create and save event
             $eventInfo = [
-                'title' => "Appointment with $admin->job_title $admin->name",
                 'user_id' => $user->id,
                 'admin_id' => $admin->id,
                 'start' => $start,

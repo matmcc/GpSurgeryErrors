@@ -15,45 +15,58 @@ use Illuminate\Http\Request;
 use Calendar;
 
 /**
+ * BEWARE: There are some hardcoded values in whereBetween to limit event fetching to 2 or 3 months
  * TODOS
- * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
- * TODO: Edit for results does nothing
+ * TODO: Remove: Edit for results does nothing
+ * TODO: Admin Nav links are broken FIX or REMOVE?
  *
- * Todo: Fix availability calendar in user view
- * TODO: ADD AJAX Call to Update calendar
+ * TODO: Info page for drugs available and days off
  *
- * TODO: Validate patient has appt at same time?
+ * TODO: Validate patient has appt at same time? Does my validation do this?
  * Todo: Add validation to update
- * Todo: CHECK validation
+ * Todo: CHECK validation - for each input.
  * Todo: CHECK Parsley JS validation for other inputs
  *
- * Note: show, edit, allow for additional features to be built, e.g. email re: event
- * Done-ish...
- * TODO: flash message for choose bookable
- * TODO: flash message for prescription renewal CHECK
- * Todo: Check flash messaging across all pages
+ * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
  *
- * Todo: add email notifications
- * TODO: Tooltips ?
- *
- * TODO: Do we need days off for admins ?
- * TODO: Info page for drugs available and days off ?
- *
- * Todo: Admin links from each function to other function easily - keep User in session?
- * Todo: Admin Nav links are broken FIX or REMOVE?
- * Todo: Breadcrumb previous users for admin?
- *
- * Todo: DONE FOR USER test bootstrap for resizeable design
  * Todo: Check ARIA tags
+ * Todo: DONE FOR USER test bootstrap for resizeable design
+ * Todo: Chat?
+ * TODO: Tooltips ?
+ * Todo: add email notifications
  *
- * Todo: DONE add name logic for title == null
- * Todo: ... then remove names from seeder
+ * TODO: Check Migrations & Seeders run reliably
+ * TODO: How to submit?
+ * TODO: Github?
+ * TODO: Video?
+ * TODO: Azure?
+ *
+ * TODO? Master CSS + dl any more CSS?
+ * TODO Fix TempusDominus so it does not display time
+ *
+ * TODO: Check...
+ * DONE Fix availability calendar in user view
+ * DONE ADD AJAX Call to Update calendar
+ *
+ * Note: show, edit, allow for additional features to be built, e.g. email re: event
+ * TODO: Check...
+ * flash message for choose bookable
+ * flash message for prescription renewal CHECK
+ * Check flash messaging across all pages
+ *
+ * DONE Do we need days off for admins ?
+ *
+ * TODO: Check...
+ * DONE add name logic for title == null
+ * DONE ... then remove names from seeder
+ *
+ * Todo?: Admin links from each function to other function easily - keep User in session?
+ * Todo?: Breadcrumb previous users for admin?
  *
  * Todo: add fullcalendar callbacks to update events if dragged
  * Todo: add fc callbacks for times
  * Todo: add fc draggable to create event ?
  *
- * Todo: Chat?
  *
  * Class CalendarEventController
  * @package App\Http\Controllers

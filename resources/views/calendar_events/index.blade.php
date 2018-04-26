@@ -179,6 +179,7 @@
 
         </div>
     </div>
+    <hr>
 
     <div class="card">
         <div class="card-header" id="calHeader">
