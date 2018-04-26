@@ -123,7 +123,8 @@
         $(function () {
 
             var datePicker = $('#datepicker-start');
-            var date = datePicker.datetimepicker('viewDate').startOf('day');
+            //var date = datePicker.datetimepicker('viewDate').startOf('day');
+            var date = moment().startOf('day');
             console.log('Date: ', date.toString());
             var time = '00:00';
             var admin_id = JsVar.admin_id;
@@ -151,6 +152,7 @@
                 var dTimes = [];
                 $.when(
                     $.getJSON('events/admin/' + admin_id, function (data) {
+                        //console.log(data);
                             $.each(data, function (i, event) {
                                 var $start = moment(event.start, 'YYYY-MM-DD[T]HH:mm:ss', 'en-gb');
                                 if($start.isSame(date, 'day')) {
