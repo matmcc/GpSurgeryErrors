@@ -31,6 +31,9 @@ $apiKey = 'AIzaSyC_bz97z_S5S0bDQzWlC25D3Tj_6few9IU'
                                 Cambridge<br>
                                 Cambridgeshire<br>
                                 CB24 5NZ<br>
+                                <strong>Opening Hours:</strong><br>
+                                Monday - Friday: 08:00 - 18:00<br>
+                                Saturday - Sunday: ( Closed )<br>
                             </div>
 
                             <div class="col-sm" id="map">
@@ -38,7 +41,7 @@ $apiKey = 'AIzaSyC_bz97z_S5S0bDQzWlC25D3Tj_6few9IU'
                                     function initMap() {
                                         var overSurgery = {lat: 52.317, lng: 0.012};
                                         var map = new google.maps.Map(document.getElementById('map'), {
-                                            zoom: 15,
+                                            zoom: 14,
                                             center: overSurgery
                                         });
                                         var marker = new google.maps.Marker({
@@ -48,7 +51,7 @@ $apiKey = 'AIzaSyC_bz97z_S5S0bDQzWlC25D3Tj_6few9IU'
                                     }
                                 </script>
                                 <script async defer
-                                        src={{ 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC_bz97z_S5S0bDQzWlC25D3Tj_6few9IU&callback=initMap'}}>
+                                        src={{ "https://maps.googleapis.com/maps/api/js?key=$apiKey&callback=initMap"}}>
                                 </script>
                             </div>
                         </div>

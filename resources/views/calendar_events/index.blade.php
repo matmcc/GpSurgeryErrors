@@ -107,9 +107,11 @@
                 @endif
 
                 <!-- End Admin section -->
+
+
             @elseif(Auth::guard('web')->check())
                 <!-- User section -->
-            @if(count($calendar_events) == 0)
+            @if(count($calendar_events) == 0 ?? !isset($calendar_events))
                 @component('layouts.empty')
                     <strong>You do not have any appointments.</strong>
                     <br>You can use the select box below to choose a Dr or Nurse with whom to book an apppointment.

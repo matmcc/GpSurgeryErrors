@@ -4,12 +4,11 @@
             {{ $title }}
         </div>
         <div class="card-body">
-            <p class="card-text">{{ $body }}</p>
+            <p class="card-text">{{ str_limit($body, 200) }}</p>
             <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                     <a class="btn btn-sm btn-outline-secondary"
                        href="{{ $view }}">View</a>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                 </div>
                 <small class="text-muted">{{ $date }}</small>
             </div>

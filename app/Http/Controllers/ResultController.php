@@ -10,6 +10,16 @@ use Illuminate\Http\Request;
 class ResultController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:web,admin');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -46,37 +56,4 @@ class ResultController extends Controller
         return view('results.results', compact('results'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Result $result)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Result $result)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Result  $result
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Result $result)
-    {
-        //
-    }
 }

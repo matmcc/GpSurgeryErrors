@@ -9,7 +9,11 @@
 
 @section('content')
     <div class="page-header">
-        <h3>Book Appointment with {{ $admins[$admin_id] }}</h3>
+        @if(Auth::guard('admin')->check())
+            <h3>Book Appointment for {{ App\User::find($user_id)->name  }}</h3>
+        @else
+            <h3>Book Appointment with {{ $admins[$admin_id] }}</h3>
+        @endif
     </div>
     <hr>
 
@@ -48,7 +52,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="timePicker_preText">Time:</span>
                             </div>
-                            <input class="form-control" id="timePicker" type="text" class="time"/>
+                            <input class="form-control" id="timePicker" type="text" class="time" required/>
                             <div class="input-group-append" id="timePicker_postText">
                                 <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
                             </div>
@@ -122,10 +126,10 @@
 
         $(function () {
 
+            // Set up variables -----------------------------------------------------------------------
             var datePicker = $('#datepicker-start');
-            //var date = datePicker.datetimepicker('viewDate').startOf('day');
             var date = moment().startOf('day');
-            console.log('Date: ', date.toString());
+            //console.log('Date: ', date.toString());
             var time = '00:00';
             var admin_id = JsVar.admin_id;
             var disabledTimes = [];
@@ -134,19 +138,7 @@
             calendar.option('locale', 'en-gb');
             $('.fc').fullCalendar({events: 'events/' + admin_id});
 
-            $( "#loadAjax" ).hide();
-            $( document ).ajaxStart(function() {
-                $( "#calHeader" ).addClass('bg-info').addClass('text-center');
-                $( "#calHeader" ).text('Loading Calendar Events');
-            });
-            $( document ).ajaxComplete(function() {
-                $( "#calHeader" ).removeClass('bg-info').removeClass('text-center');
-                $( "#calHeader" ).text('Calendar');
-            });
-
-            // was used before AJAX request in next function
-            // appended into footer - uses PHP-Var-to-JS to access
-            // console.log(JsVar.disabledTimes[0]);
+            // Functions -----------------------------------------------------------------------
 
             function getDisabledTimesByAjax(date) {
                 var dTimes = [];
@@ -163,7 +155,6 @@
                         })
                 ).then( function() {
                     console.log('Disabled times: ', dTimes);
-                    //updateTimePicker(dTimes);
                     $('#timePicker').timepicker('remove');
                     $('#timePicker').timepicker({
                         'timeFormat': 'H:i',
@@ -180,14 +171,14 @@
             // TODO: Change JSON request to include date
 
             function updateStartTime(date, time) {
-                //time = typeof time !== 'undefined' ? time : '00:00';
-                // TODO: next line needed?
                 date.startOf('day');
                 date.add(moment.duration(time));
                 $('#start').val(date);
                 console.log("updateStartTime: ", date.toString());
                 return date;
             }
+
+            // Additional setup for elements -----------------------------------------------------------------------
 
             // Set up datepicker options
             datePicker.datetimepicker({
@@ -197,18 +188,19 @@
                 format: 'L'
             });
 
-            // Init timepicker
-            // $('#timePicker').timepicker({
-            //     'timeFormat': 'H:i',
-            //     'step': 30,
-            //     'forceRoundTime': true,
-            //     //'useSelect': true,
-            //     'minTime': '8am',
-            //     'maxTime': '5:30pm',
-            //     'disableTimeRanges': disabledTimes
-            // });
             getDisabledTimesByAjax(date);
 
+            // Callbacks -----------------------------------------------------------------------
+
+            $( "#loadAjax" ).hide();
+            $( document ).ajaxStart(function() {
+                $( "#calHeader" ).addClass('bg-info').addClass('text-center');
+                $( "#calHeader" ).text('Loading Calendar Events');
+            });
+            $( document ).ajaxComplete(function() {
+                $( "#calHeader" ).removeClass('bg-info').removeClass('text-center');
+                $( "#calHeader" ).text('Calendar');
+            });
 
             // on date change - update disabled times; update startDatetime
             datePicker.on("change.datetimepicker", function (e) {
@@ -219,7 +211,7 @@
             });
 
             // on FullCalendar date change - update dTimes, update start
-            calendar.on('viewRender', function(view, element){
+            calendar.on('viewRender', function(){
                 // getDate seemed to ignore locale, so using moment().local() to force this
                 date = calendar.getDate().local();
                 datePicker.datetimepicker('date', date);
@@ -233,9 +225,9 @@
                 updateStartTime(date, time);
             });
 
-            $('#start').on('change', function() {
-                console.log("StartTime changed: ", $(this).val());
-            });
+            // $('#start').on('change', function() {
+            //     console.log("StartTime changed: ", $(this).val());
+            // });
 
             $('#selectAdmin_id').on('change', function() {
                 admin_id = $(this).val();

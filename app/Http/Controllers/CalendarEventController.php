@@ -15,58 +15,28 @@ use Illuminate\Http\Request;
 use Calendar;
 
 /**
- * BEWARE: There are some hardcoded values in whereBetween to limit event fetching to 2 or 3 months
- * TODOS
- * TODO: Remove: Edit for results does nothing
- * TODO: Admin Nav links are broken FIX or REMOVE?
- *
- * TODO: Info page for drugs available and days off
- *
- * TODO: Validate patient has appt at same time? Does my validation do this?
- * Todo: Add validation to update
- * Todo: CHECK validation - for each input.
- * Todo: CHECK Parsley JS validation for other inputs
- *
- * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
- *
- * Todo: Check ARIA tags
- * Todo: DONE FOR USER test bootstrap for resizeable design
- * Todo: Chat?
- * TODO: Tooltips ?
- * Todo: add email notifications
- *
  * TODO: Check Migrations & Seeders run reliably
  * TODO: How to submit?
  * TODO: Github?
  * TODO: Video?
  * TODO: Azure?
  *
- * TODO? Master CSS + dl any more CSS?
- * TODO Fix TempusDominus so it does not display time
+ * Todo: Check ARIA tags
+ * Todo: Chat?
+ * TODO: Tooltips?
+ * Todo: further email notifications
+ * TODO: Prescription and Result - admin_id to enable functionality - e.g. contact
  *
- * TODO: Check...
- * DONE Fix availability calendar in user view
- * DONE ADD AJAX Call to Update calendar
- *
- * Note: show, edit, allow for additional features to be built, e.g. email re: event
- * TODO: Check...
- * flash message for choose bookable
- * flash message for prescription renewal CHECK
- * Check flash messaging across all pages
- *
- * DONE Do we need days off for admins ?
- *
- * TODO: Check...
- * DONE add name logic for title == null
- * DONE ... then remove names from seeder
- *
+ * Todo? Master CSS + dl any more CSS?
  * Todo?: Admin links from each function to other function easily - keep User in session?
  * Todo?: Breadcrumb previous users for admin?
- *
- * Todo: add fullcalendar callbacks to update events if dragged
- * Todo: add fc callbacks for times
- * Todo: add fc draggable to create event ?
- *
+ * Todo?: add fullcalendar callbacks to update events if dragged
+ * Todo?: add fc draggable to create event ?
+ */
+
+
+/**
+ * BEWARE: There are some hardcoded values in whereBetween to limit event fetching to 2 or 3 months
  *
  * Class CalendarEventController
  * @package App\Http\Controllers
@@ -113,7 +83,7 @@ class CalendarEventController extends Controller
     }
 
     /**
-     * Paginate Collection
+     * Paginate a Collection
      *
      * @param array|Collection      $items
      * @param int   $perPage
@@ -166,12 +136,12 @@ class CalendarEventController extends Controller
      * @param Request $request
      * @param CalendarEvent $calendar_event
      */
-    public function saveCalendarEvent(Request $request, CalendarEvent $calendar_event): void
+    protected function saveCalendarEvent(Request $request, CalendarEvent $calendar_event): void
     {
         $calendar_event->title          = $request->input("title");
         $calendar_event->start          = Carbon::parse($request->input("start"));
         $calendar_event->end            = Carbon::parse($request->input("start"))->addMinutes(30);
-        $calendar_event->user_id        = Auth::user()->getAuthIdentifier();
+        $calendar_event->user_id        = Auth::guard('admin')->check() ? $request->input("user_id") : Auth::user()->getAuthIdentifier();
         $calendar_event->admin_id       = $request->input('selectAdmin');
 
         $calendar_event->save();
@@ -182,9 +152,9 @@ class CalendarEventController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('calendar_events.create');
+        return $this->createByAdmin($request);
     }
 
     /**
@@ -256,11 +226,11 @@ class CalendarEventController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param Requests\StoreCalendarEvent $request
      * @param CalendarEvent $calendar_event
      * @return Response
      */
-    public function update(Request $request, CalendarEvent $calendar_event)
+    public function update(Requests\StoreCalendarEvent $request, CalendarEvent $calendar_event)
     {
         $this->saveCalendarEvent($request, $calendar_event);
 
@@ -307,12 +277,15 @@ class CalendarEventController extends Controller
     {
         $name = $request->input('searchNameValue');
         $uCname = ucwords($name);
-        $firstname = preg_split('/\s+/', $uCname)[0];
+        $nameSplit = preg_split('/\s+/', $uCname);
+        $firstname = $nameSplit[0];
+        $lastname = end($nameSplit);
 
         $results = collect();
 
         $users = User::where('name', '=', "$uCname")
         ->orWhere('name', 'like', "$firstname%")
+        ->orWhere('name', 'like', "%$lastname%")
         ->orWhere('email', '=', mb_strtolower($name))
         ->get();
 
@@ -341,7 +314,7 @@ class CalendarEventController extends Controller
     {
         $admin = Admin::find($request->input('selectAdmin'));
 
-        $calendar_events = $results = $admin->events()->get()->sortby('start');
+        $calendar_events = $results = $admin->events()->where('user_id', '!=', '1')->get()->sortby('start');
         $calendar_events_sorted = $this->paginate($results, 10, null, ['path' => route('calendar_events.events.admin', ['selectAdmin' => $admin->id])]);
 
         $calendar = $this->prepCalendar($calendar_events);
