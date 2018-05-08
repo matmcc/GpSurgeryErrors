@@ -20,3 +20,6 @@ Run php artisan serve
   
 Go to localhost:8000  
   
+Look in the DB for user and admin details - user have password: 'secret', admins have password: 'password'.  
+  
+  
