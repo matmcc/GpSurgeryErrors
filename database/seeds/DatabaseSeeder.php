@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             DayOffsTableSeeder::class,
             AdminDaysOffSeeder::class,
             DayOffToCalendarEventSeeder::class,
-            CalendarEventTableSeeder::class,
+            CalendarEventTableSeeder::class
         );
     }
 }
