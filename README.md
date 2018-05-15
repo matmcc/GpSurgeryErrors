@@ -26,4 +26,5 @@ Go to localhost:8000
   
 Look in the DB for user and admin details - user have password: 'secret', admins have password: 'password'.  
   
-  
+If you receive a SwiftMailer exception then you may need to set email username and password in .env  
+You can set up a [mailtrap account](https://mailtrap.io) and use the SMTP username and password for the demo inbox for testing purposes    
